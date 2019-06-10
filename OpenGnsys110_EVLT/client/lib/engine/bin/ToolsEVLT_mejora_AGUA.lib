@@ -1,0 +1,853 @@
+#!/bin/bash
+#/**
+#@file    ToolsEVLT_ConfAGUA.lib
+#@brief   Librería o clase EVLT
+#@class   Boot
+#@brief   Funciones especificas para el curso 2013-2014 .
+#@version 1.0.5
+#@warning License: GNU GPLv3+
+#*/
+
+
+#ogSetAguaActive
+       #${MNT}/usr/local/screen_DESACTIVADO
+       #"/Program Files (x86)/agua/aguac/desactiva" 
+
+#ogSetAguaCentroini
+	# /usr/local/screen/centro.ini
+	# /Program Files (x86)/agua/aguac/centro.ini
+	
+#ogSetAguaProxyini
+# "/usr/local/screen/proxydefault.ini
+# "/Program Files (x86)/agua/aguac/proxydefault.ini
+
+
+#ogSetCreateInfo
+# /usr/local/screen/opengnsys.ini
+#/Program Files (x86)/agua/aguac/opengnsys.ini
+
+
+#ogGetAguaConf()
+
+#ogGetProxyDefinedInEngine()
+
+#ogGetProxy()
+#ogSetProxyLinuxConsole()
+#OgSetProxyInternetExplorer (y el override para adminsitrador administrator curso alumnos alumnos.v2)
+
+#ogSetAguaBootFlag()
+
+#ogSetAguaDesktop()
+
+#ogSetAguaVersion()
+
+
+
+
+
+function ogSetAguaVersion {
+DISK=$1 
+PART=$2 
+AGUAVERSION=$3
+
+MNT=$(ogMount $1 $2)
+#TODO: revisar bien las instrucciones en windows y linux
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		touch ${MNT}/usr/local/repositorio.txt
+		
+	;;
+	*Windows*)   echo "Windows"	
+		echo "ReservaJavaiDumaW7adminDir64bits$AGUAVERSION" > "${MNT}/Program Files (x86)/agua/repositorio.txt"
+	;;
+	*)
+		return 1
+	;;
+esac
+
+
+}
+
+
+function ogSetAguaDesktop ()
+{
+	DISK=$1
+	PART=$2
+	USER=$3
+		
+	MNT=$(ogMount $1 $2)
+	
+	#echo "Configurando el bginfo para el usuario "
+	#NOTA el pathreg entre comillas dobles s
+	PATHREG="\Control Panel\Desktop\Wallpaper"
+	
+	echo "iniciando  configuracion del desktop para el usuario $USER"
+	ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "C:\Windows\Bginfo.bmp"  
+	ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+
+}
+
+
+
+
+
+function ogGetAguaConf {
+DISK=$1 
+PART=$2 
+
+MNT=$(ogMount $1 $2)
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		DIRFILE=$(ogGetPath $1 $2 "/usr/local/screen")
+	;;
+	*Windows*)   echo "Windows"
+		DIRFILE=$(ogGetPath $1 $2 "/Program Files (x86)/agua/aguac")
+	;;
+	*)
+		return 1
+	;;
+esac
+
+echo "ogSetAguaCentroini ${DIRFILE}/centro.ini"
+cat "${DIRFILE}/centro.ini"
+echo "ogSetAguaProxyini ${DIRFILE}/proxydefault.ini"
+cat "${DIRFILE}/proxydefault.ini"
+echo "ogSetAguaPCini ${DIRFILE}/pc.ini"
+cat "${DIRFILE}/pc.ini"
+echo "ogSetCreateInfo y ogSetRestoreInfo  ${DIRFILE}/opengnsys.ini"
+cat "${DIRFILE}/opengnsys.ini"
+
+
+
+}
+
+
+
+function ogSetAguaActive {
+#elimina desactiva
+# crea botones
+DISK=$1 
+PART=$2 
+
+MNT=$(ogMount $1 $2)
+#TODO: revisar bien las instrucciones en windows y linux
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		[ -d ${MNT}/usr/local/screen_DESACTIVADO ] && mv ${MNT}/usr/local/screen_DESACTIVADO /mnt/sda2/usr/local/screen
+	;;
+	*Windows*)   echo "Windows"
+		ogDeleteFile $1 $2 "/Program Files (x86)/agua/aguac/desactiva"
+		touch "${MNT}/Program Files (x86)/agua/aguac/botones"
+	;;
+	*)
+		return 1
+	;;
+esac
+
+
+}
+
+
+
+function ogSetAguaDesactive {
+#elimina desactiva
+# crea botones
+DISK=$1 
+PART=$2 
+
+MNT=$(ogMount $1 $2)
+#TODO: revisar bien las instrucciones en windows y linux
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		mv  "${MNT}/usr/local/screen/agua.sh"  "${MNT}/usr/local/screen/screen/agua.off"
+	;;
+	*Windows*)   echo "Windows"
+ 		mv "${MNT}/Windows/util/alumnos.bat" "/mnt/sda1/Windows/util/alumnos.off"
+	;;
+	*)
+		return 1
+	;;
+esac
+
+
+}
+
+
+
+function ogSetAguaCentroini {
+#
+#
+DISK=$1 
+PART=$2 
+
+#CENTRONAME
+#variable CENTRONAME 
+if [ -z "$CENTRONAME" ]
+then
+	LOCATION=$(ogGetHostname | awk -F"-" '{print $1}')
+	case $LOCATION in
+	arq|ARQ)
+		CENTRONAME="Arquitectura"	
+		;;
+	cte|CTE)
+		CENTRONAME="Complejo Tecnologico"	
+		;;	
+   	eco|ECO)
+		CENTRONAME="Economicas"	
+		;;
+   	tur|TUR)
+		CENTRONAME="Turismo"	
+		;;
+   	fyl|FYL)
+		CENTRONAME="Filosofia y Letras"	
+		;;
+   	psiedu|PSIEDU|edu|EDU)
+		CENTRONAME="Psicologia y Educacion"	
+		;;
+   	der|DER)
+		CENTRONAME="Derecho"	
+		;;
+	med|MED)
+		CENTRONAME="Medicina"	
+		;;
+   	cien|CIEN|aso|ASO)
+		CENTRONAME="Ciencias "	
+		;;
+   	cie|CIE)
+		CENTRONAME="Centro Internacional de Espa�ol "	
+		;;
+	ccs|CCS)
+		CENTRONAME="Ciencias de la Salud"	
+       ;;
+    ccinf|CCINF)
+		CENTRONAME="Ciencias de la Informacion"	
+		;;
+    cesc|CESC)
+		CENTRONAME="Centro de Estudios Sociales y Comercio"	
+		;;	
+	so|SO)
+		CENTRONAME="Severo Ochoa"	
+		;;
+    lp|LP)
+		CENTRONAME="Lopez Peñalver"	
+		;;
+   	ing|ING)
+		CENTRONAME="Ingenierias"	
+		;;
+   	bbaa|BBAA)
+		CENTRONAME="Bellas Artes"	
+		;;
+	gb|GB)
+		CENTRONAME="Gerald Brenan"	
+		;;
+	a4|A4)
+		CENTRONAME="Profesor Juan Antonio Ramirez"	
+		;;
+	*)
+		echo "default"
+		CENTRONAME="Universidad de Málaga"
+  		;; 	
+	esac
+fi
+
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		DIRFILE=$(ogGetPath $1 $2 "/usr/local/screen")
+	;;
+	*Windows*)   echo "Windows"
+		DIRFILE=$(ogGetPath $1 $2 "/Program Files (x86)/agua/aguac")
+	;;
+	*)
+		return 1
+	;;
+esac
+
+FILE=${DIRFILE}/centro.ini
+#linux
+rm "${DIRFILE}/centro.ini"
+
+touch "$FILE"
+#Creacion sobreescribe
+cat > "$FILE" << EOF
+$CENTRONAME
+EOF
+
+unix2dos "$FILE"
+
+}
+
+
+function ogGetProxyDefinedInEngine ()
+{
+	LOCATION=$(ogGetHostname | awk -F"-" '{print $1}')
+	case $LOCATION in
+	arq|ARQ)
+		ogproxy="proxy.arquitectura.aulas.uma.es:3128"	
+		;;
+	bbaa|BBAA)
+		ogproxy="proxy.bellasartes.alumnos.uma.es:3128"	
+		;;
+	eco|ECO)
+		ogproxy="proxy.economicas.alumnos.uma.es:3128"	
+		;;
+   	tur|TUR)
+		ogproxy="proxy.turismo.alumnos.uma.es:3128"	
+		;;
+	cccom|CCCOM)
+		ogproxy="proxy.cccom.aulas.uma.es:3128"	
+		;;
+	ccinf|CCINF)
+		CENTRONAME="proxy.cccom.aulas.uma.es:3128"	
+		;;
+   	fyl|FYL)
+		ogproxy="proxy.aulas.uma.es:3128"	
+		;;
+   	psiedu|PSIEDU|edu|EDU)
+		ogproxy="proxy.psicologia.aulas.uma.es:3128"	
+		;;
+   	der|DER)
+		ogproxy="proxy.derecho.alumnos.uma.es:3128"	
+		;;
+   	med|MED)
+		ogproxy="proxy.medicina.alumnos.uma.es:3128"	
+		;;
+   	cien|CIEN)
+		ogproxy="proxy.ciencias.alumnos.uma.es:3128"	
+		;;
+	so|SO)
+		ogproxy="proxy.ciencias.alumnos.uma.es:3128"	
+		;;
+   	cie|CIE)
+		ogproxy="proxy.aulas.uma.es:3128"	
+		;;
+   	lp|LP)
+		ogproxy="proxy.lp.alumnos.uma.es:3128"	
+		;;
+	cte|CTE)
+		ogproxy="proxy.aulas.uma.es:3128"	
+		;;
+   	ing|ING)
+		ogproxy="proxy.ingenierias.alumnos.uma.es:3128"	
+		;;
+	cesc|CESC)
+		ogproxy="proxy.aulas.uma.es:3128"	
+		;;	
+	ccs|CCS)
+		ogproxy="proxy.aulas.uma.es:3128"	
+       ;;
+    gb|GB)
+		ogproxy="proxy.aulas.uma.es:3128"	
+       ;;
+    a4|A4)
+		ogproxy="proxy.aulas.uma.es:3128"	
+       ;;
+	*)
+		#echo "default"
+		ogproxy="proxy.aulas.uma.es:3128"
+  		;; 	
+	esac
+
+#Controlamos que sea un portatil
+DEPENDENCIA=$(ogGetHostname | awk -F"-" '{print $2}')
+case $DEPENDENCIA in
+	por|PORT|port|PORT)
+		ogproxy="proxy.wifi.uma.es:3128"	
+	;;	
+esac	
+echo $ogproxy
+}
+
+function ogSetAguaProxyini ()
+{
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+#ogproxy
+#variable ogproxy 
+#if [ -z "$ogproxy" ]
+#then
+	ogproxy=$(ogGetProxyDefinedInEngine)
+#fi	
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		DIRFILE=$(ogGetPath $1 $2 "/usr/local/screen")
+	;;
+	*Windows*)   echo "Windows"
+		DIRFILE=$(ogGetPath $1 $2 "/Program Files (x86)/agua/aguac")
+	;;
+	*)
+		return 1
+	;;
+esac
+
+FILE=${DIRFILE}/proxydefault.ini
+echo "$ogproxy" > "$FILE"
+
+}
+
+
+
+
+
+function ogSetAguaPCini ()
+{
+
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+INFOPC="$(ogGetIpAddress),$(ogGetMacAddress)"
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		DIRFILE=$(ogGetPath $1 $2 "/usr/local/screen")
+	;;
+	*Windows*)   echo "Windows"
+		DIRFILE=$(ogGetPath $1 $2 "/Program Files (x86)/agua/aguac")
+	;;
+	*)
+		return 1
+	;;
+esac
+
+FILE=${DIRFILE}/pc.ini
+
+echo "$INFOPC" > "$FILE"
+
+}
+
+
+
+
+
+function ogSetCreateInfo {
+#llamada en scritp CreateImage
+#i137 #adv
+#138 ogSetCreateInfo $1 $2 $4
+#139 
+#140 # Crear la imagen.
+#141 
+
+#
+#
+DISK=$1 
+PART=$2 
+IMAGENAME=$3
+CREATEDATE=$(date "+%Y-%m-%d")
+CREATEMODEL=$(ogGetHostname)
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		DIRFILE=$(ogGetPath $1 $2 "/usr/local/screen")
+	;;
+	*Windows*)   echo "Windows"
+		DIRFILE=$(ogGetPath $1 $2 "/Program Files (x86)/agua/aguac")
+	;;
+	*)
+		return 1
+	;;
+esac
+
+FILE=${DIRFILE}/opengnsys.ini
+touch "$FILE"
+echo $CREATEMODEL $FILE
+#Creacion sobreescribe
+cat > "$FILE" << EOF
+IMAGENAME=$3
+CREATEDATE=$CREATEDATE
+CREATEMODEL=$CREATEMODEL
+EOF
+
+unix2dos "$FILE"
+
+}
+
+
+function ogSetRestoreInfo {
+#llamada en scritp 
+
+#
+#
+DISK=$1 
+PART=$2 
+IMAGENAME=$3
+RESTOREDATE=$(date "+%Y-%m-%d")
+RESTOREMODEL=$(ogGetHostname)
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		DIRFILE=$(ogGetPath $1 $2 "/usr/local/screen")
+	;;
+	*Windows*)   echo "Windows"
+		DIRFILE=$(ogGetPath $1 $2 "/Program Files (x86)/agua/aguac")
+	;;
+	*)
+		return 1
+	;;
+esac
+
+FILE=${DIRFILE}/opengnsys.ini
+#touch "$FILE"
+#echo $CREATEMODEL $FILE
+#Restauracion Creacion sobreescribe
+cat >> "$FILE" << EOF
+IMAGENAME=$3
+RESTOREDATE=$RESTOREDATE
+RESTOREMODEL=$RESTOREMODEL
+EOF
+
+unix2dos "$FILE"
+
+}
+
+
+
+
+function ogGetProxy ()
+{
+#TODO controlar windows y linux
+
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+	ogHelp "$FUNCNAME" "$FUNCNAME path_mountpoint str_hive"
+	"$FUNCNAME int_disk int_partit  => proxy.aulas.uma.es:3128"
+	return
+fi
+           
+# Error si no se reciben 2 parámetros.
+[ $# == 2 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+
+PATHREG="\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyServer"
+LISTUSER="Administrador curso alumnos Administrator alumnos.V2"
+for USER in $LISTUSER
+do
+	echo "ileyecto configuración del proxy "$ogproxy" para el usuario $USER"
+	ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+done
+}
+
+
+function ogSetProxyLinuxConsole ()
+{
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+
+#ogproxy
+#variable ogproxy 
+#if [ -z "$ogproxy" ]
+#then
+	ogproxy=$(ogGetProxyDefinedInEngine)
+#fi	
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Linux"
+		DIRFILE=$(ogGetPath $1 $2 "/etc")
+	;;
+	*Windows*)   echo "Windows"
+		return 1
+	;;
+	*)
+		return 1
+	;;
+esac
+
+#environ
+FILE=${DIRFILE}/environment
+touch "$FILE"
+cat > "$FILE" << EOF
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games"
+http_proxy="http://${ogproxy}/"
+https_proxy="https://${ogproxy}/"
+ftp_proxy="ftp://${ogproxy}/"
+LANGUAGE="es_ES:en"
+LANG="es_ES.UTF-8"
+EOF
+	
+#apt.
+FILE=${DIRFILE}/apt/apt.conf
+touch "$FILE"
+cat > "$FILE" << EOF
+Acquire::http::proxy "http://${ogproxy}/";
+Acquire::https::proxy "https://${ogproxy}/";
+Acquire::ftp::proxy "ftp://${ogproxy}/";
+EOF
+	
+}
+
+function ogSetProxyInternetExplorerUserANDProxy ()
+{
+	DISK=$1
+	PART=$2
+	USER=$3
+	ogproxy=$4
+	startpage=$5
+	
+	MNT=$(ogMount $1 $2)
+	
+	#echo "Internet Explorer iniciando configuración del proxy "$ogproxy" "
+	#NOTA el pathreg entre comillas dobles s
+	PATHREG="\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyServer"
+	
+	echo "iniciando configuración del proxy "$ogproxy" para el usuario $USER"
+	ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "$ogproxy"  
+	ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+		
+	#echo "Internet Explorer no proxy para la uma. "
+	#NOTA el pathreg entre comillas dobles s
+	PATHREG="\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyOverride"
+	echo "iniciando configuración del proxy "$ogproxy" para el usuario $USER"
+	ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "*cv.uma.es;<local>"  
+	ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+	
+	echo "iniciando la configuración del la pagina de inicio"
+	echo "Internet Explorer"
+	PATHREG="'\Software\Microsoft\Internet Explorer\Main'"
+	ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "$startpage"
+}
+
+
+function ogSetProxyInternetExplorer ()
+{
+	DISK=$1
+	PART=$2
+	MNT=$(ogMount $1 $2)
+	#ogproxy
+	#variable ogproxy 
+	if [ -z "$ogproxy" ]
+	then
+		ogproxy=$(ogGetProxyDefinedInEngine)
+		echo $ogproxy
+	fi
+
+	#echo "Internet Explorer iniciando configuración del proxy "$ogproxy" "
+	#NOTA el pathreg entre comillas dobles s
+	PATHREG="\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyServer"
+	LISTUSER="Administrador curso Administrator alumnos.V2 alumnos"
+	for USER in $LISTUSER
+	do
+		echo "iniciando configuración del proxy "$ogproxy" para el usuario $USER"
+		ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "$ogproxy"  
+		ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+	done
+	
+	#echo "Internet Explorer no proxy para la uma. "
+	#NOTA el pathreg entre comillas dobles s
+	PATHREG="\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyOverride"
+	LISTUSER="Administrador Administrator curso alumnos alumnos.V2"
+	for USER in $LISTUSER
+	do
+		echo "iniciando configuración del proxy "$ogproxy" para el usuario $USER"
+		ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "*.uma.es;<local>"  
+		ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+	done
+	
+	
+	
+	echo "iniciando la configuración del la pagina de inicio"
+	echo "Internet Explorer"
+	PATHREG="'\Software\Microsoft\Internet Explorer\Main'"
+	LISTUSER="Administrador Administrator"
+	for USER in $LISTUSER
+	do
+		ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "www.uma.es"
+	done
+		
+	
+
+}
+
+function ogSetAguaBootFlag()
+{
+DISK=$1
+PART=$2
+MNTDIR=$(ogMount $1 $2)
+# Marcas de arranque
+    	mkdir -p ${MNTDIR}/agua
+		echo "ogpxe;" `ls -l --time-style=+%d/%m/%Y\;%X $OGLOGFILE.initrd | cut -d" " -f6` > ${MNTDIR}/agua/bootprocess
+		#traza del ogmenu
+		echo "ogmenu;" `ls -l --time-style=+%d/%m/%Y\;%X $OGLOGFILE | cut -d" " -f6`  >> ${MNTDIR}/agua/bootprocess
+		#traza del ogvalidate
+		echo "ogvalidate;" `date +%d/%m/%Y\;%X` >> ${MNTDIR}/agua/bootprocess
+ 		# formato dos
+		#sub1: convertivos unix a dos; sub2 eliminamos espacios
+		gawk 'sub("$","\r")sub(" ","")' ${MNTDIR}/agua/bootprocess > ${MNTDIR}/agua/bootprocess.txt
+		rm ${MNTDIR}/agua/bootprocess
+		#Fin marcas de arranque
+}
+
+
+function ogSetProxyOLD ()
+{
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+#ogproxy
+#variable ogproxy 
+if [ -z "$ogproxy" ]
+then
+			ogproxy=$(ogGetProxyDefinedInEngine)
+		echo $ogproxy
+	
+fi
+
+
+# ----------------------------------------------------------------------------·
+# TODO condicional ----------windows------------------------------------------------------------------·
+#echo "Internet Explorer iniciando configuración del proxy "$ogproxy" "
+#NOTA el pathreg entre comillas dobles s
+PATHREG="\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyServer"
+LISTUSER="Administrador curso alumnos"
+for USER in $LISTUSER
+do
+	echo "iniciando configuración del proxy "$ogproxy" para el usuario $USER"
+	ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "$ogproxy"  
+	ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+done
+echo "iniciando la configuración del la pagina de inicio"
+echo "Internet Explorer"
+PATHREG="'\Software\Microsoft\Internet Explorer\Main'"
+LISTUSER="Administrador curso alumnos"
+for USER in $LISTUSER
+do
+	ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "www.uma.es"
+done
+
+#copiamos el hive modificado al perfil obligatorio congelado.
+ogDeleteFile $1 $2 "/Program Files (x86)/agua/alumnos.user.profile/NTUSER.DAT"
+ogCopyFile $1 $2 "/Users/alumnos/NTUSER.DAT" 1 1 "/Program Files (x86)/agua/alumnos.user.profile/NTUSER.DAT" 
+
+
+############################################################################################################################
+#echo "Google Crome"
+#LISTUSER="alumnos curso Administrador"
+#for USER in $LISTUSER
+##do
+#	CFGFILE="${MNT}/Users/${USER}/AppData/Local/Google/Chrome/User Data/Default/Preferences" 
+###	if ! grep urls_to_restore_on_startup "$CFGFILE"
+###then 
+#	echo "cp /opt/opengnsys/scripts/chrome.preferences $CFGFILE"
+#	cp /opt/opengnsys/scripts/chrome.preferences "$CFGFILE"
+###else
+##	echo "existe la entrada" 
+##	sed -i s/^.*urls_to_restore_on_startup.*$/'"urls_to_restore_on_startup": [ "http://www.uma.es/" ]'/ "$CFGFILE"
+##fi
+#done
+#################################################################################################################################
+####################################################################################################################
+#CMDFILE=$(ogGetPath 1 1 /Program\ Files\ \(x86\)/agua/aguac/chrome.bat)
+#cat > "$CMDFILE" << EOF
+#@echo off
+#"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -incognito -proxy-server=$ogproxy proxy-bypass-list=*.uma.es
+#EOF
+################################################################################################################
+
+
+
+echo "Firefox"
+LISTUSER="Administrador alumnos curso"
+for USER in $LISTUSER
+do
+	CFGFILE="${MNT}/Users/${USER}/AppData/Roaming/Mozilla/Firefox/Profiles/${USER}.default/prefs.js"
+	if ! grep browser.startup.homepage  "$CFGFILE"
+then 
+	echo 'user_pref("browser.startup.homepage", "www.uma.es");' >> "$CFGFILE"
+else 
+	sed -i s/^.*browser.startup.homepage.*$/'user_pref("browser.startup.homepage", "www.uma.es");'/ "$CFGFILE"
+fi
+
+	if [ $USER = "alumnos" ]
+	then
+		echo "copiando el prefs.js al perfil obligatorio"
+		#PARCHE Modificado ogCopyFile  
+		FILECOPY="AppData/Roaming/Mozilla/Firefox/Profiles/alumnos.default/prefs.js"
+		ogCopyFile $1 $2 "/Users/alumnos/${FILECOPY}" $1 $2 "/Program Files (x86)/agua/alumnos.user.profile/${FILECOPY}" 
+		echo "ogCopyFile $1 $2 \"/Users/alumnos/${FILECOPY}\" $1 $2 \"/Program Files (x86)/agua/alumnos.user.profile/${FILECOPY}\" " 
+	fi
+done
+
+
+#TODO condicional en linux
+}
+
+function ogGetWindowsDNSsearchList ()
+{
+# Variables locales.
+local PART MNTDIR
+
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1  ==>  PRACTICA-PC"
+    return
+fi
+# Error si no se reciben 2 parámetros.
+[ $# == 2 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+# Montar el sistema de archivos.
+MNTDIR=$(ogMount $1 $2) || return $?
+
+# Obtener dato del valor de registro de Widnows 10
+ogGetRegistryValue $MNTDIR system '\ControlSet\Services\Tcpip\Parameters\SearchList'
+ogGetRegistryValue $MNTDIR system '\ControlSet001\Services\Tcpip\Parameters\SearchList'
+
+# Obtener dato del valor de registro de Widnows 7
+ogGetRegistryValue $MNTDIR system '\ControlSet\services\Tcpip\Parameters\SearchList'
+ogGetRegistryValue $MNTDIR system '\ControlSet001\services\Tcpip\Parameters\SearchList'
+
+}
+
+
+function ogSetWindowsDNSsearchList ()
+{
+# Variables locales.
+local PART MNTDIR NAME
+
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_filesys str_listSeparetecomas" \
+           "$FUNCNAME 1 1 dominio.uno,dominio.dos"
+    return
+fi
+# Error si no se reciben 3 parámetros.
+[ $# == 3 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+# Error si el nombre supera los 15 caracteres.
+#[ ${#3} -le 15 ] || ogRaiseError $OG_ERR_OUTOFLIMIT "\"${3:0:15}...\"" || return $?
+
+# Montar el sistema de archivos.
+MNTDIR=$(ogMount $1 $2) || return $?
+
+# Asignar lista.
+DNSSEARCHLIST="$3"
+
+# Modificar datos de los valores de registro Windows 10
+ogSetRegistryValue $MNTDIR system '\ControlSet\Services\Tcpip\Parameters\SearchList' "$DNSSEARCHLIST" 2>/dev/null
+ogSetRegistryValue $MNTDIR system '\ControlSet001\Services\Tcpip\Parameters\SearchList' "$DNSSEARCHLIST" 2>/dev/null
+
+# Modificar datos de los valores de registro Windows 7
+ogSetRegistryValue $MNTDIR system '\ControlSet\services\Tcpip\Parameters\SearchList' "$DNSSEARCHLIST" 2>/dev/null
+ogSetRegistryValue $MNTDIR system '\ControlSet001\services\Tcpip\Parameters\SearchList' "$DNSSEARCHLIST" 2>/dev/null
+
+}
+
+

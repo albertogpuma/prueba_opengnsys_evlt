@@ -1,0 +1,66 @@
+function ogGetsServiceStart ()
+{
+#TODO controlar windows y linux
+
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+	ogHelp "$FUNCNAME" "$FUNCNAME path_mountpoint str_hive"
+	"$FUNCNAME int_disk int_partit  klnagent wuauserv"
+	return
+fi
+           
+# Error si no se reciben 3 parámetros.
+[ $# == 3 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+DISK=$1
+PART=$2
+SERVICE=$3
+MNT=$(ogMount $1 $2)
+
+PATHREG="\ControlSet001\Services\\\$3\Start"
+echo "leyecto configuración del SERVICIO $SERVICE $PATHREG"
+ogGetRegistryValue "$MNT" "SYSTEM" "$PATHREG" 
+echo "ogGetRegistryValue $MNT SYSTEM $PATHREG" 
+
+ogGetRegistryValue /mnt/sda1 SYSTEM '\ControlSet001\Services\wuauserv\Start'
+
+
+}
+
+function ogSetServiceStatus ()
+{
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+
+
+
+
+
+PATHREG="\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\ToolWiz"
+LISTUSER="Usuario_UMA Usuario_UMA.V6"
+for USER in $LISTUSER
+do
+	echo "iniciando configuración del toolwiz para el usuario $USER"
+	ogAddRegistryValue "$MNT" "$USER" "$PATHREG" STRING
+	ogSetRegistryValue "$MNT" "$USER" "$PATHREG" "\"c:\Program Files\Toolwiz Time Freeze 2017\ToolwizTimeFreeze.exe\" /freeze /usepass=imagen17EVLT"  
+	ogGetRegistryValue "$MNT" "$USER" "$PATHREG" 
+done
+}
+
+function ogDeleteServiceStatus ()
+{
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+
+
+
+PATHREG="\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\ToolWiz"
+LISTUSER="Usuario_UMA Usuario_UMA.V6"
+for USER in $LISTUSER
+do
+	echo "eliminando configuración del toolwiz  para el usuario $USER"
+	ogDeleteRegistryValue "$MNT" "$USER" "$PATHREG"
+done
+}

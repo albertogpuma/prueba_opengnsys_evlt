@@ -1,0 +1,68 @@
+#/bin/bash
+#!/bin/bash
+#/**
+#@file    TimeFreezeEnable
+#@brief   Activa el Toolwiz.
+#@param   $1 número de disco
+#@param   $2 número de particion
+#@exception OG_ERR_FORMAT   1 formato incorrecto.
+#@exception OG_ERR_NOTFOUND  2 fichero de imagen o partición no detectados.
+#@exception OG_ERR_PARTITION 3	# Error en partición de disco.
+#@exception OG_ERR_LOCKED    4 partición bloqueada por otra operación.
+#@version 1.0.1 - primera version
+#@author  Antonio J. Doblas Viso.
+#@date    2017-02-23
+#**/
+
+PROG="$(basename $0)"
+if [ $# -lt 2 ]; then
+    ogRaiseError session $OG_ERR_FORMAT "$MSG_FORMAT: $PROG  ndisco nparticion"
+    exit $?
+fi
+
+
+
+
+################ Bloque de variables ####################
+DISK=$1
+PART=$2
+POSTCONF=postconf.cmd
+################ Fin bloque de variables ################
+OPTION=$3
+
+
+DIR=$(ogMount $DISK $PART)
+
+
+FILENAME="${DIR}/Users/Usuario_UMA/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/02.runActivate.cmd"
+cat "$FILENAME"
+rm $"$FILENAME"
+
+unix2dos "$FILENAME"
+
+
+FILENAME2="${DIR}/Users/Usuario_UMA/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/09.clean.cmd"
+cat > "$FILENAME2" << EOF
+@echo off
+timeout /T 30 /NOBREAK
+del "c:\Users\Usuario_UMA\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\02.runActivate.cmd"
+EOF
+unix2dos "$FILENAME2"
+
+
+FILENAME3="${DIR}/Users/Usuario_UMA/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/08.status.cmd"
+cat > "$FILENAME3" << EOF
+reg query "HKCU\SOFTWARE\Toolwiz\TimefreezeNew"
+EOF
+unix2dos "$FILENAME3"
+
+
+
+
+
+
+
+
+
+
+

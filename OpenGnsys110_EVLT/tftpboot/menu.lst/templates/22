@@ -1,0 +1,8 @@
+##NO-TOCAR-ESTA-LINEA 2hd-1partition
+timeout 1
+title SecondHardDisk-FirstPartition
+root (hd1,0)
+chainloader (hd1,0)+1
+boot
+
+

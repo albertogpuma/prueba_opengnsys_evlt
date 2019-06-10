@@ -1,0 +1,178 @@
+#!/bin/bash
+#/**
+#@file    Disk.lib
+#@brief   Librería o clase Disk
+#@class   Disk
+#@brief   Funciones para gestión de discos y particiones.
+#@version 1.1.0
+#@warning License: GNU GPLv3+
+#*/
+
+#/**
+#         ogCreatePartitions int_ndisk str_parttype:int_partsize ...
+#@brief   Define el conjunto de particiones de un disco.
+#@param   int_ndisk      n� de orden del disco
+#@param   str_parttype   mnem�nico del tipo de partici�n
+#@param   int_partsize   tama�o de la partici�n (en KB)
+#@return  (nada, por determinar)
+#@exception OG_ERR_FORMAT    formato incorrecto.
+#@exception OG_ERR_NOTFOUND  disco o partici�n no detectado (no es un dispositivo).
+#@exception OG_ERR_PARTITION error en partici�n o en tabla de particiones.
+#@attention El n� de partici�n se indica por el orden de los p�rametros \c parttype:partsize
+#@attention Pueden definirse particiones vac�as de tipo \c EMPTY
+#@attention No puede definirse partici�n de cache y no se modifica si existe.
+#@note    Requisitos: sfdisk, parted, partprobe, awk
+#@todo    Definir atributos (arranque, oculta) y tama�os en MB, GB, etc.
+#@version 0.9 - Primera versi�n para OpenGnSys
+#@author  Ramon Gomez, ETSII Universidad de Sevilla
+#@date    2009/09/09
+#@version 0.9.1 - Correcci�n del redondeo del tama�o del disco.
+#@author  Ramon Gomez, ETSII Universidad de Sevilla
+#@date    2010/03/09
+#@version 1.0.4 - Llamada a funci�n espec�fica para tablas GPT.
+#@author  Universidad de Huelva
+#@date    2012/03/30
+#*/ ##
+function ogCreatePartitions ()
+{
+# Variables locales.
+local ND DISK PTTYPE PART PARTNVME SECTORS START SIZE TYPE CACHEPART CACHESIZE IOSIZE EXTSTART EXTSIZE tmpsfdisk
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk str_parttype:int_partsize ..." \
+           "$FUNCNAME 1 NTFS:10000000 EXT3:5000000 LINUX-SWAP:1000000"
+    return
+fi
+# Error si no se reciben al menos 2 par�metros.
+[ $# -ge 2 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+# N� total de sectores, para evitar desbordamiento (evitar redondeo).
+ND="$1"
+DISK=$(ogDiskToDev "$ND") || return $?
+PTTYPE=$(ogGetPartitionTableType $1)
+PTTYPE=${PTTYPE:-"MSDOS"}               # Por defecto para discos vac�os.
+case "$PTTYPE" in
+    GPT)   ogCreateGptPartitions "$@"
+           return $? ;;
+    MSDOS) ;;
+    *)     ogRaiseError $OG_ERR_PARTITION "$PTTYPE"
+           return $? ;;
+esac
+SECTORS=$(ogGetLastSector $1)
+# Se recalcula el n� de sectores del disco 1, si existe partici�n de cach�.
+CACHEPART=$(ogFindCache 2>/dev/null)
+[ "$ND" = "${CACHEPART% *}" ] && CACHESIZE=$(ogGetCacheSize 2>/dev/null | awk '{print $0*2}')
+[ -n "$CACHESIZE" ] && SECTORS=$[SECTORS-CACHESIZE]
+
+# Sector de inicio (la partici�n 1 empieza en el sector 63).
+##########   agp  ###########
+iodisco=$(ogDiskToDev $1)
+IOSIZE=$(fdisk -l $iodisco | grep I/O | cut -d ":" -f2 | cut -d "/" -f1 | cut -d " " -f2)
+if [[ $IOSIZE = 4096 ]]; then
+	START=4096
+else
+	START=63
+fi
+
+
+
+
+PART=1
+
+##########   agp  ###########
+### SSD nvme ###
+# Buscamos si el disco es SSD nvme
+if [[ $iodisco == *nvme*  ]]; then
+	PARTNVME=p
+fi
+##########   agp  ###########
+
+# Fichero temporal de entrada para "sfdisk"
+tmpsfdisk=/tmp/sfdisk$$
+trap "rm -f $tmpsfdisk" 1 2 3 9 15
+
+echo "unit: sectors" >$tmpsfdisk
+echo                >>$tmpsfdisk
+
+# Generar fichero de entrada para "sfdisk" con las particiones.
+shift
+while [ $# -gt 0 ]; do
+    # Conservar los datos de la partici�n de cach�.
+    if [ "$ND $PART" == "$CACHEPART" -a -n "$CACHESIZE" ]; then
+		if [[ $PARTNVME == "p" ]]; then
+			### SSD nvme ###
+			echo "$DISK$PARTNVME$PART : start=$[SECTORS+1], size=$CACHESIZE, Id=ca" >>$tmpsfdisk
+		else
+			echo "$DISK$PART : start=$[SECTORS+1], size=$CACHESIZE, Id=ca" >>$tmpsfdisk
+		fi
+        PART=$[PART+1]
+    fi
+    # Leer formato de cada par�metro - Tipo:Tama�o
+    TYPE="${1%%:*}"
+    SIZE="${1#*:}"
+    # Obtener identificador de tipo de partici�n v�lido.
+    ID=$(ogTypeToId "$TYPE" MSDOS)
+    [ "$TYPE" != "CACHE" -a -n "$ID" ] || ogRaiseError $OG_ERR_PARTITION "$TYPE" || return $?
+    # Comprobar tama�o num�rico y convertir en sectores de 512 B.
+    [[ "$SIZE" == *([0-9]) ]] || ogRaiseError $OG_ERR_FORMAT "$SIZE" || return $?
+    SIZE=$[SIZE*2]
+    # Comprobar si la partici�n es extendida.
+    if [ $ID = 5 ]; then
+        [ $PART -le 4 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+        let EXTSTART=$START+2048
+        let EXTSIZE=$SIZE-2048
+    fi
+    # Incluir particiones l�gicas dentro de la partici�n extendida.
+    if [ $PART = 5 ]; then
+        [ -n "$EXTSTART" ] || ogRaiseError $OG_ERR_FORMAT || return $?
+        START=$EXTSTART
+        SECTORS=$[EXTSTART+EXTSIZE]
+    fi
+    # Generar datos para la partici�n.
+	if [[ $PARTNVME == "p" ]]; then
+		### SSD nvme ###
+		echo "$DISK$PARTNVME$PART : start=$START, size=$SIZE, Id=$ID" >>$tmpsfdisk	
+	else
+		echo "$DISK$PART : start=$START, size=$SIZE, Id=$ID" >>$tmpsfdisk
+	fi
+    # Error si se supera el n� total de sectores.
+    START=$[START+SIZE]
+    [ $START -le $SECTORS ] || ogRaiseError $OG_ERR_FORMAT "$[START/2] > $[SECTORS/2]" || return $?
+    PART=$[PART+1]
+    shift
+done
+# Si no se indican las 4 particiones primarias, definirlas como vac�as, conservando la partici�n de cach�.
+while [ $PART -le 4 ]; do
+    if [ "$ND $PART" == "$CACHEPART" -a -n "$CACHESIZE" ]; then
+		if [[ $PARTNVME == "p" ]]; then
+			### SSD nvme ###
+			echo "$DISK$PARTNVME$PART : start=$[SECTORS+1], size=$CACHESIZE, Id=ca" >>$tmpsfdisk	
+		else
+			echo "$DISK$PART : start=$[SECTORS+1], size=$CACHESIZE, Id=ca" >>$tmpsfdisk
+		fi
+    else
+		if [[ $PARTNVME == "p" ]]; then
+			### SSD nvme ###
+			echo "$DISK$PARTNVME$PART : start=0, size=0, Id=0" >>$tmpsfdisk	
+		else
+			echo "$DISK$PART : start=0, size=0, Id=0" >>$tmpsfdisk
+		fi
+    fi
+    PART=$[PART+1]
+done
+# Si se define partici�n extendida sin l�gicas, crear particion 5 vac�a.
+if [ $PART = 5 -a -n "$EXTSTART" ]; then
+    echo "${DISK}5 : start=$EXTSTART, size=$EXTSIZE, Id=0" >>$tmpsfdisk
+fi
+
+# Desmontar los sistemas de archivos del disco antes de realizar las operaciones.
+ogUnmountAll $ND 2>/dev/null
+[ -n "$CACHESIZE" ] && ogUnmountCache 2>/dev/null
+
+# Si la tabla de particiones no es valida, volver a generarla.
+ogCreatePartitionTable $ND
+# Definir particiones y notificar al kernel.
+sfdisk -f $DISK < $tmpsfdisk 2>/dev/null && partprobe $DISK
+#rm -f $tmpsfdisk
+[ -n "$CACHESIZE" ] && ogMountCache 2>/dev/null || return 0
+}

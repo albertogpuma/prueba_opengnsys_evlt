@@ -1,0 +1,192 @@
+#!/bin/bash
+
+#/**
+#         configureOS
+#@brief   Scirpt de ejemplo para realizar la configuracion del sistema operativo restaurado.
+#@brief (puede usarse como base para el programa de creación de imágenes usado por OpenGnSys Admin).
+#@param 1 disco 
+#@param 2 particion 
+#@return  
+#@TODO  comprobar que el tipo de particion corresponde con el sistema de archivos.
+#@exception OG_ERR_FORMAT     # 1 formato incorrecto.
+
+POSTCONFLOG="/tmp/postconflog"
+echo "inicio" >  $POSTCONFLOG
+# Carga el configurador del engine y los parámetros de red.
+[ -z $OGENGINECONFIGURATE ] && source /opt/opengnsys/etc/engine.cfg
+[ -f $DEVICECFG ] && source $DEVICECFG
+
+
+echo "00 dejando marcas del proceso de creacion en la particion solo si es llamada desde el deployImage con 4 parametros"
+[ $# -eq 4 ] && ogSetRestoreInfo "$1" "$2" "$4"
+
+echo "00 INICIO generico tras clonar: extender sistema, ajustar tipo" >> $POSTCONFLOG
+PARTSIZE=$(ogGetPartitionSize $1 $2) || exit $?
+FSSIZE=$(ogGetFsSize $1 $2)
+FLAGACTIVE=$(ogGetPartitionActive $1)
+TYPEPART=$(ogGetPartitionType $1 $2)
+TYPEFS=$(ogGetFsType $1 $2)
+
+#1) Si el sistema de archivos no esta extendido, ampliarlo al tamaño de su partición.
+if [ $FSSIZE -lt $PARTSIZE ]; then
+	ogExtendFs $1 $2
+fi
+#2) Si no existe partición activa, activar este sistema.
+[ -z $FLAGACTIVE ] && ogSetPartitionActive $1 $2
+#3)integridad sistema de archivos y particiones.
+ogUpdatePartitionTable $1
+#4) Si el sistema de archivos no esta extendido. Realizar.
+PARTSIZE=$(ogGetPartitionSize $1 $2)
+FSSIZE=$(ogGetFsSize $1 $2)
+if [ $FSSIZE -lt $PARTSIZE ]; then
+	echo "$MSG_HELP_ogExtendFs : $FSSIZE > $PARTSIZE " 
+	ogExtendFs $1 $2
+fi
+#5) "Comprobar coherencia entre  tipo sistema de archivos ($TYPEFS) y tipo de particion ($TYPEPART)"
+case "$TYPEFS" in
+	NTFS)
+		NEWTYPEPART="NTFS"
+	;;
+	EXT*)
+		NEWTYPEPART="LINUX"
+	;;
+	*)
+		NEWTYPEPART=$TYPEFS
+	;;
+esac
+#echo " PARTITION-TYPE= $TYPEPART FS-TYPE= $NEWTYPEPART "
+[ "$TYPEPART" != "$NEWTYPEPART" ] && ogSetPartitionType $1 $2 $NEWTYPEPART
+echo "00 FIN generico tras clonar: extender sistema, ajustar tipo"
+
+
+echo "01 INICIO generico tras clonar: Configuracion gestor de arranque." >> $POSTCONFLOG
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+        Linux*)   echo "Configuracion Gestor Arranque de Linux"
+            # el grubMBR solo se instala por el installMenuSistema
+            #ogGrubInstallMbr $1 $2 TRUE "irqpoll pci=noacpi noresume quiet splash" 
+            echo "Instalar grub2 en Partition y configurarlo sin opciones de menu y parámetros de kernel nomodeset irqpoll pci=noacpi"
+            ogGrubInstallPartition $1 $2 TRUE "irqpoll pci=noacpi noresume quiet splash"
+        ;;
+        *Windows*)   echo "Configuracion Gestor Arranque de Windows"
+                #Usar BCD de plantilla
+                test `ogGetHostname | awk -F- '{ print $1 }'` = "ING"  && ogWindowsTemplateBCD $1 $2    
+                # Configurar el boot sector de la partición Windows.
+                ogFixBootSector $1 $2
+                # Configurar el gestor de arranque de Windows XP/Vista/7.
+                ogWindowsBootParameters $1 $2
+                # Registrar en Windows que la partición indicada es su nueva unidad C:\
+                ogWindowsRegisterPartition $1 $2 C $1 $2
+                #Orden de busqueda de sufijos dns
+                ogSetWindowsDNSsearchList $1 $2 "sci.uma.es,uma.es,evlt.uma.es,aulas.uma.es"
+            case "$TYPE" in 
+                *Windows\ XP) echo "Configuracion de Arranque especifico para windows XP"
+                ;;
+                *Windows\ 7*)  echo "onfiguracion de Arranque especifico para windows W7"
+                    buildToOrder $1 $2
+                ;;
+            esac
+        ;;
+esac
+echo "01 FIN generico tras clonar: Configuracion gestor de arranque."
+
+DEPENDENCIA=$(ogGetDependenciaTipo)
+echo "02 INICIO configuracion por Dependencia EVLT $DEPENDENCIA " >> $POSTCONFLOG
+
+ogEcho log session "  [-] Detectar subdependencia Complejo Tecnologico de EVLT: nombre equipo = $HOSTNAME"
+SUBDEPENDENCIA=$(ogGetDependenciaNumero)
+
+# "lt" "ad""opac""etu" "por""con" "srv" "warning tipo dependencia no coincide $TYPEDEPENDENCIA"
+case "$DEPENDENCIA" in
+    lt|ad|opac|etu|por|con)
+        ## INICIO DEPENDENCIA LT
+        #FASE2: Personalización del sistema operativo.
+        TYPE=$(ogGetOsVersion $1 $2)
+        case "$TYPE" in
+            Linux*)   echo "PostConfiguracion de Linux segun Dependencia $DEPENDENCIA"
+                echo "Asignar nombre"
+                ogSetLinuxName $1 $2
+                echo "Configurar fichero fstab segun Dependencia $DEPENDENCIA"
+                ogConfigureFstab $1 $2 
+                echo "Limpiar dispositivos reconocidos previamente"
+                ogCleanLinuxDevices $1 $2 
+                echo "proxy"
+                ogSetProxyLinuxConsole $1 $2
+                # https://proyectos.evlt.uma.es/browse/IBWL-309
+                #ogSetLnxInterface $1 $2                
+                # configuracion especifica EVLT
+                ogSetLnxEVLT $1 $2
+            ;;
+            *Windows*)   echo "PostConfiguracion de Windows segun Dependencia $DEPENDENCIA"
+                # Cambiar nombre en sistemas Windows.
+                HOST=$(ogGetHostname)
+                HOST=${HOST:-"pc"}
+                ogSetWindowsName $1 $2 "$HOST"   
+                case "$TYPE" in 
+                    *Windows\ 10*) echo "PostConfiguracion de Windows 10"
+                    	echo "fin postconfiguración de windows 10"
+                    	#FirstRunOnceWindows10 $1 $2
+                    ;;
+                    *Windows\ XP) echo "PostConfiguracion de XP"
+                    ;;
+                    *Windows\ 7*)  echo "Postconfiguracion de W7"
+                        echo "Chkdisk segun engine.cfg"
+                        ogLoadHiveWindows $1 $2; ogSetWindowsChkdisk $OGWINCHKDISK; ogUpdateHiveWindows
+                        # Especifico de windows 7 profesional o Windows 
+                        case "$TYPE" in 
+                            *Windows\ 7\ Professional*)  echo "Postconfiguracion de W7 profesional "	
+                            ;;
+                            *Windows\ 7\ Enterprise*)  echo "Postconfiguracion de W7 Enterprise "
+                                activeLicenseMicrosoftEnterprise $1 $2
+                                ogSetWinResolution $1 $2 1280 1024
+                                #ogSetWinMSWinActivate $1 $2
+                                #ogSetWinMSOfficeActivate $1 $2
+                                ogSetWinDriverConfig $1 $2
+                                ogSetWinBCD $1 $2
+                                #ogSetWinMenuConfig $1 $2
+                                #ogSetWinWakeOnLan $1 $2
+                                ogSetAguaDesktop $1 $2 administrator
+                                ogSetAguaDesktop $1 $2 alumnos.V2
+                                ogSetAguaVersion $1 $2 Prueba
+                             ;;
+                         esac # tipo de windows 7: profesional o enterprise
+                        ;;
+                esac # version de de windows: windows XP o Widnows 7
+            ;;            
+            *) echo " Depencia EVLT pero no coincide con sistema operativo"
+            ;;
+        esac  # tipo de sistema operativo
+      ;; ## FIN PARA DEPENDENCIA LT reconocidas.
+      *) 
+        echo "dependencia EVLT no coincide $DEPENDENCIA" >> $POSTCONFLOG
+      ;;
+esac
+echo "01 FIN configuracion por Dependencia EVLT." 
+
+echo "02 INICIO configuracion por Centro EVLT  " >> $POSTCONFLOG
+# "lt" "ad""opac""etu" "por""con" "srv" "warning tipo dependencia no coincide $TYPEDEPENDENCIA"
+case "$DEPENDENCIA" in
+    lt|ad|opac|etu|por|con)    
+        #Especifico CTE Aulas DOCENTES de Teleco (las AD de informatica igual que todas) 
+    	if [ "$SUBDEPENDENCIA" == "t" ]; then
+		echo "subdependencia t"
+		ogSetRegistryValue /mnt/sda1 software '\Microsoft\Windows NT\CurrentVersion\Winlogon\AutoAdminLogon' '0'  2>/dev/null
+		ogSetAguaDesactive $1 $2
+        ogSetAguaDesktop $1 $2 Usuario_UMA  
+	    fi    
+        #Linux* | *Windows* ) echo "Especifico de AGUA" 
+        #ogSetAguaActive $1 $2
+        #configura el centro ini para linux y windows
+        ogSetAguaCentroini $1 $2
+        ogSetAguaProxyini $1 $2 
+        ogSetAguaPCini $1 $2
+        ogSetZabbixHostname $1 $2
+    ;;  
+    *)
+    ;;
+esac
+    
+    
+
+cat $POSTCONFLOG
+rm $POSTCONFLOG

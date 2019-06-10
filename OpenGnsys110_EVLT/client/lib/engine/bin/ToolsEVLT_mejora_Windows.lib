@@ -1,0 +1,419 @@
+
+# ruta de los scritps generales No agua
+#DIR="${MOUNTPOINT}/Program Files (x86)/agua/aguac/scripts"
+
+#ruta del scritps de llamada agua.
+#DIR="${DIR}/runOnce/ogRunOnce.cmd
+#DIR="${DIR}/runEver/ogRunEver.cmd
+
+
+
+function ogSetWinDriverConfig ()
+{
+
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+
+HIVE="SOFTWARE"
+
+PATHREG="\Microsoft\Windows\CurrentVersion\DriverSearching\SearchOrderConfig"
+ogGetRegistryValue "$MNT" "$HIVE" "$PATHREG" 
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "2"  
+ogGetRegistryValue "$MNT" "$HIVE" "$PATHREG" 
+	
+PATHREG="\Microsoft\Windows\CurrentVersion\Device Metadata\PreventDeviceMetadataFromNetwork"
+ogGetRegistryValue "$MNT" "$HIVE" "$PATHREG" 
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "1"  
+ogGetRegistryValue "$MNT" "$HIVE" "$PATHREG" 
+
+	
+}
+
+
+
+
+
+function ogSetWinMenuConfig ()
+{
+
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+
+HIVE="alumnos.V2"
+
+#note    hive = { DEFAULT, SAM, SECURITY, SOFTWARE, SYSTEM, COMPONENTS }
+#note    valuetype = { STRING, BINARY, DWORD }, por defecto: STRING
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\MenuStyle"
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Classic1"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Documents"
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Hide"  
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\RecentPrograms"
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "None"  
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\EnableContextMenu"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\EnableExit"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\EnableExplorer"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"  
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\WinKey"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Nothing"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\ShiftWin"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Nothing"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\EnableJumplists"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"  
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\SkinA"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "<No Skin>"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\SkinVariationA"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" ""  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\SkinOptionsA"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" ""  
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\SkinC1"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Classic Skin"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\SkinVariationC1"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" ""  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\SkinOptionsC1"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "BD80CDB2|C26EAF5C|86F3669C|5225DC46|5D3248DC|E87963C2|80316ABE|"  
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Computer"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Hide" 
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\UserFiles"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Hide" 
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\UserDocuments"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Hide"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\ControlPanel"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Hide"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Network"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Hide"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Printers
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Hide"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Printers
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" STRING
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "Windows 7 Enterprise N EVLT UMA"
+
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\LogOff"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"  
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Undock"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0" 
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Search"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Help"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\Run"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\HighlightNew"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"
+
+PATHREG="\Software\IvoSoft\ClassicStartMenu\Settings\CheckWinUpdates"
+ogAddRegistryValue "$MNT" "$HIVE" "$PATHREG" DWORD
+ogSetRegistryValue "$MNT" "$HIVE" "$PATHREG" "0"
+
+
+
+#Windows Registry Editor Version 5.00
+
+#[HKEY_CURRENT_USER\Software\IvoSoft\ClassicStartMenu\Settings]
+#"MenuStyle"="Classic1"
+#"Documents"="Hide"
+#"RecentPrograms"="None"
+#"SkinA"="<No Skin>"
+#"SkinVariationA"=""
+#"SkinOptionsA"=""
+# "EnableContextMenu"=dword:00000000
+# "EnableExit"=dword:00000000
+# "EnableExplorer"=dword:00000000
+ #"SkinC1"="Classic Skin"
+ #"SkinVariationC1"=""
+ #"SkinOptionsC1"="BD80CDB2|C26EAF5C|86F3669C|5225DC46|5D3248DC|E87963C2|80316ABE|"
+ #"WinKey"="Nothing"
+ #"ShiftWin"="Nothing"
+ #"EnableJumplists"=dword:00000000
+}
+
+
+function ogSetWinResolution ()
+{
+#1 Varibles
+local DIR NAME FILENAME
+
+#2 Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition str_width str_height" \
+           "$FUNCNAME 1 1 1280 1024" \
+            "$FUNCNAME 1 1 max max"           
+    return
+fi
+
+#3 Error si no se reciben 4 parámetros.
+[ $# == 4 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+#4 Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+# 
+#DIR scripts-AGUA
+MOUNTPOINT=$(ogMount $1 $2)
+DIR="${MOUNTPOINT}/Program Files (x86)/agua/aguac/scripts"
+mkdir -p "${DIR}"
+#NOMBRE scritps-AGUA
+NAME=SetWinResolution.cmd
+FILENAME="${DIR}/$NAME"
+#Contenido del scripts
+#echo "timeout /T 5" > "$FILENAME"
+#1280x1024
+#echo "c:\Windows\System32\dc64.exe -width=1280 -height=1024" >> "$FILENAME"
+echo "c:\Windows\System32\dc64.exe -width=$3 -height=$4" > "$FILENAME"
+#echo "c:\Windows\System32\dc64.exe -max" >> "$FILENAME"
+unix2dos "$FILENAME"
+
+
+
+#Incluir llamada en el scripts ogRunEver
+DIR="${DIR}/runEver"
+NAMECALLER=ogRunEver.cmd
+FILENAME="$DIR/$NAMECALLER"
+mkdir -p "$DIR"
+#
+[ -f "$FILENAME" ] || touch "$FILENAME"
+cat >> "$FILENAME" << EOF
+start "" /wait cmd /c "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+#
+EOF
+unix2dos "$FILENAME"
+
+
+#borrar ficheros de pruebas previos
+NAME=run9.cmd
+DIR="$MOUNTPOINT/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/"
+FILENAME="$DIR$NAME"
+rm "$FILENAME"
+}
+
+
+
+
+function ogSetWinBCD ()
+{
+
+# Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+#DIR scripts-AGUA
+MOUNTPOINT=$(ogMount $1 $2)
+DIR="${MOUNTPOINT}/Program Files (x86)/agua/aguac/scripts"
+mkdir -p "${DIR}"
+#NOMBRE scritps-AGUA
+NAME=BCDconfig.cmd
+FILENAME="${DIR}/$NAME"
+
+echo "bcdedit /set {default} recoveryenabled No" > "$FILENAME"
+echo "bcdedit /set {current} recoveryenabled No" >> "$FILENAME"
+echo "bcdedit /set {bootmgr} timeout 1" >> "$FILENAME"
+
+#propiedades del equipo -> opciones avanzadas -> 
+# iniciio de sistema -> [ ] mostra lista de sistemas operativso
+# inicio de sistema -> [x] mostrar opciones de recupeacion [1]
+
+#Windows Registry Editor Version 5.00
+#
+#[HKEY_LOCAL_MACHINE\BCD00000000\Objects\{9dea862c-5cdd-4e70-acc1-f32b344d4795}\Elements\25000004]
+#"Element"=hex:00,00,00,00,00,00,00,00
+
+unix2dos "$FILENAME"
+
+
+#Incluir llamada en el scripts ogRunOnce
+DIR="${DIR}/runOnce"
+NAMECALLER=ogRunOnce.cmd
+FILENAME="$DIR/$NAMECALLER"
+mkdir -p "$DIR"
+
+[ -f "$FILENAME" ] || touch "$FILENAME"
+cat >> "$FILENAME" << EOF
+start "" /wait cmd /c "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+EOF
+
+unix2dos "$FILENAME"
+
+}
+
+
+
+function ogSetWinWakeOnLan ()
+{
+
+
+# Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+#DIR scripts-AGUA
+MOUNTPOINT=$(ogMount $1 $2)
+DIR="${MOUNTPOINT}/Program Files (x86)/agua/aguac/scripts"
+mkdir -p "${DIR}"
+#NOMBRE scritps-AGUA
+NAME=CleanAllNetwork.cmd
+FILENAME="${DIR}/$NAME"
+
+cat > "$FILENAME" << EOF
+@ECHO OFF 
+
+:: Eliminar las redes y las interfaces de redes previas. 
+:: adv fecha: 2013/10/08 
+:: Corregir elimar interfaces de red previas. 
+:: adv fecha: 2013//11/08 
+
+echo. 
+echo Este proceso dejara sin conexión de red. Es requerido un reinicio. 
+echo. 
+
+echo : 1 eliminar la interfaz de red activa 
+devcon remove =net @PCI\VEN_*\* 
+
+echo : 2 eliminar las interfaces de red no activas. 
+devcon.exe findall =net >%TEMP%\%~n0-findall.tmp 
+devcon.exe find =net >%TEMP%\%~n0-find.tmp 
+  
+FOR /F %%i IN ('find.exe "matching device" ^<%TEMP%\%~n0-findall.tmp') DO SET findall=%%i 
+FOR /F %%i IN ('find.exe "matching device" ^<%TEMP%\%~n0-find.tmp') DO SET find=%%i 
+  
+IF %findall% EQU %find% ( 
+    GOTO :End 
+) 
+  
+FOR /F "TOKENS=1,2 DELIMS=:" %%i IN ('find.exe /V "matching device" ^<%TEMP%\%~n0-findall.tmp') DO ( 
+    find.exe "%%i" <%TEMP%\%~n0-find.tmp >NUL || ( 
+        ECHO Remove "%%j" 
+        devcon.exe remove "@%%i" 
+    ) 
+) 
+  
+:End 
+DEL %TEMP%\%~n0-*.tmp 
+
+echo : 3 eliminar las redes conocidas. 
+REG DELETE "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles" /f 
+REG DELETE "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Managed" /f 
+REG DELETE "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Unmanaged" /f 
+
+REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles" /f 
+REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Managed" /f 
+
+
+echo : 4 elimar el asistente de red nueva 
+REG ADD "HKLM\System\CurrentControlSet\Control\Network\NewNetworkWindowOff" /f 
+REG ADD "HKLM\System\ControlSet001\Control\Network\NewNetworkWindowOff" /f 
+REG ADD "HKLM\System\ControlSet002\Control\Network\NewNetworkWindowOff" /f 
+
+echo : 5 reactivamos la NIC
+devcon rescan
+echo. 
+echo Limpiador realizado correctamente 
+echo. 
+timeout /T 5
+echo. 
+  
+
+
+EOF
+
+unix2dos "$FILENAME"
+
+
+NAME2=99WOL.reg
+FILENAME2="$DIR/$NAME2"
+
+cat > "$FILENAME2" << EOF
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002BE10318}\0007]
+"WolSpeed"="256"
+"ShutdownWake"="1"
+"WakeUpCapabilities"="7"
+"PnPCapabilities"=dword:00000100
+"WakeFromShutdown"="1"
+"WakeUpModeCap"="3"
+"WakeUpModeCap"="25"
+"EnablePME"="1"
+"*WakeOnMagicPacket"="1"
+EOF
+
+unix2dos "$FILENAME2"
+
+
+
+#Incluir llamada en el scripts ogRunOnce
+DIR="${DIR}/runOnce"
+NAMECALLER=ogRunOnce.cmd
+FILENAME="$DIR/$NAMECALLER"
+mkdir -p "$DIR"
+
+[ -f "$FILENAME" ] || touch "$FILENAME"
+cat >> "$FILENAME" << EOF
+start "" /wait cmd /c "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+regedit.exe /s "C:\Program Files (x86)\agua\aguac\scripts\\$NAME2"
+EOF
+
+unix2dos "$FILENAME"
+
+
+}
+

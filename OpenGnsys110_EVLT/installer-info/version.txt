@@ -1,0 +1,390 @@
+LAST_VERSION: opengnsys110_EVLT changelog 2.0.e para opengnsys 1.1.0a
+
+changelog 2.0.e
+EA-578 Se incluyen los scripts de actualizacion de los servidores OGEVLT 106b a la 110a
+
+changelog 2.0.d
+Se ha renombrado caso subdependencia complejo tecnológico en archivo: /client/scripts/configureOsCustom
+
+changelog 2.0.c
+  Adaptar el instalador a git
+  incluir las plantillas netboot  21 y 22   
+
+changelog 2.0.b para opengnsys 1.1.0a
+A�adido bot�n Soporte
+
+changelog 2.0.a para opengnsys 1.1.0a
+   Se añade la libreria ToolsEVLT_systemMenu_Boot.lib con la funcion ogInstallSystemMenu
+   Se añade una entrada el configureOSCustom para que cuando sea un linux llame al ogInstallSystemMenu
+
+changelog 2.0 para opengnsys 1.1.0a
+Añadido scripts de cliente smartPartition desde git devel og
+Añadido scripts de cliente  firstRunOnceWindows desde git devel og
+Se mueve firstRunOnceWindows10 a directorio versioensanterirores
+
+changelog 1.9a para opengnsys 1.1.0a
+Añadido Tipo de partición en las propiedades del objeto imagen
+EA-545
+
+changelog 1.9 para opengnsys 1.1.0a
+A�adida plantilla pxe para arranque por 2 Disco
+preparado para los HP Z240 NVME
+
+changelog 1.8
+Modificado servidor de licencias KMS para windows 7
+casiopea por hemeter
+
+LAST_VERSION: opengnsys110_EVLT changelog 1.6 para opengnsys 1.1.0
+aa
+changelog 1.7
+Corrigiendo erroes en variable $OSVERSION
+Linea 179
+Linea 190
+
+changelog 1.6
+Corrigiendo errores en fichero
+configureOsCustom EA-465
+
+changelog 1.5
+A�adiendo funci�n ogAdIngControlAula especifico por CENTRo para configurar el control de Aula
+ficheros:
+ToolsEVLT_mejora_EVLT.lib
+configureOsCustom
+
+changelog 1.4
+A�adiendo mejoras y corrigiendo errores en fichero instalador
+linea 5 y 6
+linea 9 a 11
+linea 12
+linea 19 y 20
+
+
+changelog 1.3 configureOsCustom
+se habilita sección para pesonalización por CENTRO 
+
+changelog 1.2 BCD generalizados.
+Boot.lib -> ogWindowsTemplateBCD comprueba BCD.winX    , donde X puede ser win7 o win10
+se copia binarios BCD 
+
+changelog 1.1 Particionado SSD-nvme y asitente particionado mbr generico parametrizado.
+ToolsDisk.lib con createPartitions para SSD-nve
+Boot.lib ogGetBootMbr
+asistnetes.js (linea 299 ogGetBootMbr "+n_disk+" | grep unknow && ogBootMbrGeneric "+n_disk+" \n \)
+
+changelog 1.0
+CLIENT/ETC/init/default.sh -> LLAMADA A PCVIRTUAL.
+client/etc/preinit/default.sh  -> llema a loadenvironEVLT
+actualizado loadenvrion.sh
+CLIENT/ETC/PREINIIT/OTHERSERVICES -> COPIA DE LOADENVIRONT A PROFILE PARA SU USO EN CONEXIÓN SSH.
+BORRADO DEL FICHERO LIBRRIA CORRECCION ERRORES- NO MOSTRABA LA SALIDA EN LOS PROCESOS DE RESTAURACION. CORREGIDO EN LA 1.1.0
+borrado del directorio vacio bin
+borrado del directorio wwww 
+borrado de bootOS porque ya está incluido el uso del bootOsCustom.
+borrado de updatebootcache poruqe ya esta incluido: la línea importante en la 1.0.6 era la 208 con el contenido: ogExecAndLog command cp ${OGIMG}$2.torrent ${IMGDIR}/
+BORRARO DEL CREATEiMAGE Y CREACIOIN DEL CREATEIMAGECUSTOM CON LLAMDA A ogSetCreateInfo
+
+
+#changelog de la 1.0.6. No se aplican en la 1.1.0. Se deja como historico.
+
+changelog 2.8
+#FGA 21-02-2018
+   Del archivo:
+   ToolsEVLT_mejora_AGUA.lib, l�nea: 158, he a�adido la funci�n  ogSetAguaDesactive
+   ToolsEVLT_mejora_AGUA.lib, l�nea: 277, he cambiado a min�sculas la letra C de centro, quedando: "centro.ini"
+
+changelog 2.7
+#FGA 08-02-2018
+	Del archivo: ToolsEVLT_mejora_AGUA.lib se ha a�adido en las l�neas 196 y 302 el centro: "cie" con el proxy.aulas.uma.es
+
+changelog 2.6
+#FGA 07-02-2018
+	Del archivo: ToolsEVLT_mejora_AGUA.lib L�nea 303 Cambio proxy cte a proxy.aulas.uma.es
+
+changelog 2.5 
+#FGA 29-01-2018
+    configureOsCustom   l�nea 90:  SUBDEPENDENCIA=$(ogGetDependenciaNumero)
+    configureOSCustom   si subdepencia = t  (teleco) hay un if para configurar sda1 sin AGUA.
+    ToolsEVLT_mejoraEVLT.lib     ogGetDependenciaNumero
+
+changelog 2.4
+   os.cfg corrige errata windows 10.  se actualiza el os.cfg del 10.242
+   FirstRunOnceWindows10. Se deja comentada la instruccion en el configureOSCusmon  
+   Libreria ToolsEVLT_mejora_ToolsWiz.lib (ogGetToolWizUsuarioUma ogSetToolWizUsuarioUma ogDeleteToolWizUsuarioUma)
+   pruebas basicas del toolwiz (no usar)    TimeFreezeUsuarioUMADisable TimeFreezeUsuarioUMAEnable TimeFreezeDisable  TimeFreezeUninstal
+   
+
+changelog 2.3
+#AGP	21-03-2017
+Ticket #775
+Permitir mismo nombre de imagen en diferentes repositorios de imagen y s�lo
+una �nica descripci�n para los diferentes nombres
+	/www/propiedades/propiedades_imagenes.php
+#AGP
+
+changelog 2.2
+# AGP  17-03-2017
+----------------------------------------------------------------------------------
+Perfiles de hardware cuando no hay ordenadores de alta (systemMenu y NOsystemMenu)
+	www/propiedades/propiedades_perfilhardwares.php
+	L�nea 133
+----------------------------------------------------------------------------------
+Segunda L�nea en la descripci�n de la columna NetbootAvanzado
+	/opt/opengnsys/www/principal/boot_grub4dos.php
+	L�nea 206
+	$description2=exec("awk 'NR==1 {print $3}' ".$dirtemplates.$pn[$i]);	//$text=trim($text);
+
+	L�nea 209
+	if (!empty($description2) && $description != "MenuSistema"){echo $description."<br>".$description2;}else{echo $description;}
+	----------------------------------------------------------------------------------
+# AGP
+
+changelog 2.1
+    configureOSCustom para windows 10  
+    /lib/install_SHKEYS.evlt.sh
+    configureOsCustom -> llamadas a    rden de busqueda de sufijos dns
+                ogSetWindowsDNSsearchList $1 $2 "sci.uma.es,uma.es,evlt.uma.es,aulas.uma.es"
+    ToolsEVLT_mejora_AGUA, nuevas funciones:
+                  ogGetWindowsDNSsearchList 
+                  ogSetWindowsDNSsearchList
+    
+changelog 2.0  
+     /scripts/updateCache   
+     		-> ogEcho log session "cp ${OGIMG}$2.torrent ${IMGDIR}/"
+		    ->ogExecAndLog command cp ${OGIMG}$2.torrent ${IMGDIR}/
+
+changelog 1.9 http://www.opengnsys.es/ticket/771
+     /scripts/createImage    -> ogEcho log session "[16] $PROG: $MSG_SCRIPTS_CREATE_SIZE $SIZEREQUIRED $SIZEFREE"
+     /ToolsEVLT_correccionesErrores.lib/ funcion ogGetSizeParameters 
+
+Revision 1.8.
+     etc/init/default.sh
+     	- Si existe kernelparemeter PCVIRTUALIP lanzar proceso especifico.
+     etc/preinit/default.sh
+     	- cargamos loadenviorEVLT (zona horaria - proxy - dns )
+     etc/preinit/loadenvironEVLT.sh
+     		zona horaria - proxy - dns
+     etc/preinit/otherservices.sh
+     		# Se activa el ethtool
+			# Se carga el loadEnvirontEVLT al etc/profile.d/     
+     /lib/engine/bin/
+                   /ToolsEVLT_mejora_Boot/   -> funcion de BCD
+                   /ToolsEVL_mejora_HiveUser.lib  -> funcion ogGetHivePath
+     /lib/grub4dos/
+                   /BCD
+     scripts
+                   /activeLicenseMicrosoftEnterprise
+                   /bootOS    -> se quita elementos de postconfiguracion.
+                   /configureOsCustom
+                   /createImage    -> incluye llamadas  al log local
+                   /deployImage    -> incluye llamadas al log local.
+                   /REVISARYBORRARconfigureOsCustomEVLT 
+     
+     
+       
+
+
+changelog 1.7e para opengnsys 1.06,
+          init/default.sh  si PCVIRTUAL llama ogAdmLnxClient (thinclient.sh PCvirutal.sh)
+          scripts/PCVIRTUAL.SH (configura UDS, y entrada directa si asignacion solo una maquina)
+
+changelog 1.7d para opengnsys 1.06
+          compatibilidad
+             -  /preinit/loadenvironEVLT.sh > crea fichero /etc/profile.d/loadenvironEVLT.sh para acceder a las funioens por ssh
+          PCvirtual
+             - /preinit/loadenvirnn.EVLt.sh, solo variablesde internet
+             - preinit/thinclientservices.sh, adaptar ogLive para thinclient
+             - scripts/PCVIRTUAL.sh, escritorio-> firefox url del PCvirtual  
+             - ogAdmClientPCVIRTUAL (no está en el modulo)
+
+changelog 1.7c para opengnsys 1.06
+           - /preninit/otherservices.sh incluye gestion del rsyslog para el oglive 4.4 
+           - corregido la condicion del /init/default.sh
+           - Plantillas PXE 
+               18ogLiveTESTING  ogLive=172.17.10.247
+           -Compatibilidad kernel 3.0 
+                /templates tftpboot 17ogLiveOLD 18ogLiveTESTING (es necesario en el pxe /tfptpboot/ogLiveOLD y ogLiveTESTING
+                /opt/opengnsys/init/default.sh  Si kernel es 3.0 llama procesos OLD (ogAdmClient y browserOLD y source /opt/opengnsys/compatibilidad/103.lib
+                opt/opengnsys/compatibilidad/103.lib
+                18ogLiveTESTING
+           - Proxy para agua (solo datos del modulo evlt, no usa los campos de la consola web)
+             ogSetAguaProxyini () ogSetProxyLinuxConsole no hacen uso del cambpo de la consola web.
+
+changelog 1.7b para opengnsys 1.06
+			/bin/setserveraddr http://opengnsys.es/ticket/752
+            /bin/installogLive de la 1.1 -instala desde fichero-
+			/www/asistentes/jscripts/asistentes.js   http://opengnsys.es/ticket/753
+    		proxy para fyl proxy.aulas.uma.es
+
+changelog 1.7a para opengnsys 1.06
+             activacion office 2010 2013 2016   
+             activacion windows 7 Enterprise key dentro scritps. no necesita el serial KMS
+             UDS  
+                - loadenvironEVLT.sh -> soporte EXTRA de proxy y dns (a loadenviron.sh) comentarios de montaje /var/cache/apt/
+                - etc/default.sh - > llamada a scirpts/PCVIRTUALIP.sh segun /proc/cmdline
+                - scripts/PCVIRTUALIP.sh
+                - menu.lst/templates/00PCVirtual            
+             
+changelog 1.6 para opengnsys 1.06
+            ogSetAguaCentroini   para *  CENTRO=UNIVERSIdad malaga.
+            	gb|GB) CENTRONAME="Gerald Brenan"	
+			 	a4|A4) CENTRONAME="Profesor Juan Antonio Ramirez"	
+			ogGetProxyDefinedInEngine()
+			    gb|GB)  ogproxy="proxy.aulas.uma.es:3128"	     ;;
+  			    a4|A4) 		ogproxy="proxy.aulas.uma.es:3128"	
+
+
+changelog 1.5 para opengnsys 1.06
+	 activeLicenseMicrosoftEnterprise:
+	                   incluye en la carga de os.cfg los parametros DISK y PART
+	                   incluye la llamada al reboot con timeout de 300
+	                   
+
+changelog 1.4 para opengnsys 1.06
+	 ogSetZabbixPATH () en ToolsEVLT_mejora_EVLT.lib
+	 
+changelog 1.3 para opengnsys 1.0.6
+	 ogSetZabbixHostname() en ToolsEVLT_mejora_EVLT.lib
+     ogSetAguaPCini() en ToolsEVLT_mejora_AGUA.lib
+     ogGetAguaConf() muestra la información generada por ogSetAguaPCini
+	 configureOsCustom llama a ogSetAguaPCini()
+	 configureOsCustom llama a ogSetZabbixHostname()
+	 activeLicenseMicrosoftEnterprise usa fichero etc/os.cfg
+     
+changelog 1.2 para opengnsys 1.0.6 
+    Adaptado la 1.1 a la version 1.0.6 de opengnsys
+
+changelog 1.1
+  Se elimina el www/asistentes/jscripts/asistentes.js
+
+changelog 1.0 se corrige configureOsCustom por dependencia para AGUA
+
+changelog 0.9 se corrige configureOsCustom por dependencia
+ 
+changelog 0.8 updateCache igual que el de integridid_datos_torrent
+
+changelog 0.7 configuracion basada en dependencias
+ 
+
+changelog 0.6 
+11/02/2015 
+	updateCache si no hay espacio libre en engine.cfg a none retorna error
+
+changelog 0.5 
+11/02/2015 
+	configureOsCustom - Si centro ING llamada al ogWindowsTemplateBCD 
+
+changelog 0.4
+11/02/2015
+   # #ADV: restoreImage: llamada al configureOS configureOsCustom y opciones de post restauracion.
+   se elimina el deployImageCustomPost, se incluye en el restoreImage
+   se elimina el deployImageCustom, se incluye el contenido de la llamada deployImageCustomPost en el restoreImage
+   se actualiza el instalador para que borre estos deployImageCustom*
+   
+changelog 0.3
+09/02/2015
+asistente.js
+	- se añande llamada de initCache en el particionado, justo antes de reinicar.
+	
+
+
+changelog 0.2
+19/01/2015
+asistente.js  
+         -llamada al cloneRemoteFromMaster sin tuberia |tee   (y corregido el command)
+System.lib (copia de la 1.0.6 incluye ogExecAndLog)
+cloneRemoteFromMaster uso de ogExecAndLog
+
+
+changelog 0.1
+20/10/2014
+- IsAlive utiliza log
+- Asistente.js de particiones remotas (arreglo de la variable command)
+- checkreboot versión 1.0
+
+
+changelog 00
+11/07/2014
+
+
+.--- Cambio de rama 
+
+
+
+
+revision=006beta05
+changelo 06
+beta 01
+    - primeras pruebas ogBurgInstallMBR
+beta 02
+    - pruebas casi finales del ogBurgInstallMBR
+    - ogSetWinResolution
+beta 03
+    - burg install
+    - ogSetProxyLinuxConsole
+beta04
+	- configureos llama antes al BURG que al grub
+beta05
+     - ogSetLnxInterface
+  
+ 
+changelog 05
+-beta01
+  - scripts installOfflineMode
+  - etc/init/default.sh
+-beta02
+     - corregido el uso del BCD template. ara antes de configurarlo
+-beta03
+     -  ogCleanLinuxDevices borra el fichero resume
+
+    
+
+Changelog 004 (beta01,02,03,04,05)
+- beta01
+	libreria ToolsEVLT_Boot.lib
+ogWindowsTemplateBCD
+- beta 02
+#marcas de arranque.
+   etc/init/default.sh
+   etc/preinit/default.sh
+   etc/preinit/loadenvironEVLT.sh
+   lib/engine/bin/ToolsEVLT_Boot.lib  (ogBoot() crea las marcas en Windows.
+-beta 03 correcciones
+-beta 04 corregido la eliminaci�n del confiureFSTAB
+-beta 05 correcion el ogBoot sobre linux - en la 1.0.5 han introducido un intento de detecci�n automatica que no nos vale 
+
+
+ # changelog 003
+               
+ Para el torrent.
+ client/lib/engine/bin/ToolsEVLT_Protocol.lib
+ client/lib/engine/bin/ToolsEVLT_Fifle.lib
+ bin/torrent-creator 
+
+
+
+# changelog 002
+1) hide (hd0,0)
+1) engine no chkdisk en windows.
+2) disable poweroff
+
+1) Interface - RestaurarIamgen (1.0.4)
+               - Al final del archivo. 
+               - funcion ogSetRestoreInfo ()
+               - Si existe scripts configureOsCustomEVLT (), si no el scripts configureOs ()
+               
+ - Interface - CrearImagen
+                - ogSetCreateInfo $1 $2 $4
+                
+  
+ scripts -> bootOS  
+              - solo desmonta         
+              
+ isAlive
+              
+# changelog 001
+scripts/configureOsCustom.EVLT
+scripts/bootOs
+scripts/activeLicenseMicrosoft
+
+    
+ 

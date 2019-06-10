@@ -1,0 +1,402 @@
+
+
+#nota, los vbs no se ejec  utan en el directorio del menu, pero si en c:\
+# Las barras barrass \\ deben convertirese en \\\\ si no no qudan bien con el here document
+#Set objWMIService = GetObject("winmgmts:\\\\" & strComputer & "\root\cimv2")
+#Set objWMIService = GetObject("winmgmts:\\\\" & strComputer & "\root\cimv2")
+
+#TODO partial key cambia
+
+function ogSetWinMSWinActivate() {
+
+#https://technet.microsoft.com/en-us/library/jj612867(v=ws.11).aspx
+#SERVERKMS="casiopea.sci.uma.es"
+#WINSERIAL="YDRBP-3D83W-TY26F-D46B2-XCKRJ"
+
+SERVERKMS="demeter.sci.uma.es"
+WINSERIAL="YDRBP-3D83W-TY26F-D46B2-XCKRJ"
+
+# Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+
+#DIR scripts-AGUA
+MOUNTPOINT=$(ogMount $1 $2)
+DIR="${MOUNTPOINT}/Program Files (x86)/agua/aguac/scripts"
+mkdir -p "${DIR}"
+#NOMBRE scritps-AGUA
+NAME=MSWinActivate.vbs
+FILENAME="${DIR}/$NAME"
+
+
+cat > "$FILENAME.tmp" << EOF
+' Ejecuat siempre como cscript
+'version adv 1.01
+
+If InStr(1,WScript.FullName, "wscript", 1) Then 
+CreateObject("WScript.Shell").Run "cscript.exe //NoLogo " _ 
+& WScript.ScriptFullName, 1, False 
+WScript.Quit 
+End If 
+
+strComputer = "."
+IsWinActivated = False
+IsWinProductKey = False
+isPartialKeyEqual = False
+KEY = "xxxxx"
+PARTIALKEY = "XCKRJ"
+OLDPARTIALKEY = "xxxx" 
+ 
+Function InstallProductKey()
+    Wscript.Echo "Instalar product key  Microsoft: Windows 7"
+	set objShell = CreateObject("WScript.Shell")	
+	return = objShell.run ("cscript c:\Windows\System32\slmgr.vbs -skms $SERVERKMS", 1, true)
+	return = objShell.run ("cscript c:\Windows\System32\slmgr.vbs -ipk $WINSERIAL", 1, true)
+	Wscript.Echo "finalizando la instalacion del producto"
+	IsWinActivated = False
+	IsWinProductKey = True
+End Function
+
+Function UnInstallProductKey()
+	Wscript.Echo "IsWinActivated = False  an isPartialKeyEqual = False  -> elimnar product key"
+	set objShell = CreateObject("WScript.Shell")
+    return = objShell.run ("cscript C:\Windows\System32\slmgr.vbs -upk", 1, true)
+	Wscript.Echo "realizando parada"
+	Wscript.Sleep 22000 'Sleeps for 12 seconds
+	IsWinActivated = False
+	IsWinProductKey = False
+End Function
+
+Function ActivateProductKey()
+    Wscript.Echo "Instalar product key y Activar producto Microsoft: Windows 7"
+	set objShell = CreateObject("WScript.Shell")	
+	return = objShell.run ("cscript c:\Windows\System32\slmgr.vbs -skms $SERVERKMS", 1, true)
+	return = objShell.run ("cscript c:\Windows\System32\slmgr.vbs -ato", 1, true)
+	Wscript.Echo "finalizando la activacion"
+	IsWinActivated = True
+	IsWinProductKey = True
+End Function
+
+
+Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+
+Set colItems = objWMIService.ExecQuery  ("SELECT * FROM Win32_OperatingSystem",,48) 
+For Each objItem in colItems
+    Wscript.Echo "Windows : " & objItem.Caption
+	Wscript.Echo "Version       : " & objItem.Version
+next
+	
+Set colItems = objWMIService.ExecQuery _
+    ("Select * From SoftwareLicensingProduct")	
+For Each objItem in colItems
+' Mostrar informacin si encuentra un "product key de windows"
+	if not IsNull(objItem.PartialProductKey)  Then 
+		Wscript.Echo "Name          : " & objItem.Name
+		Wscript.Echo "Description   : " & objItem.Description
+		OLDPARTIALKEY = objItem.PartialProductKey 
+		'Wscript.Echo "Partial key   : " & objItem.PartialProductKey
+		Wscript.Echo "OLD Partial key   : " & OLDPARTIALKEY
+		intGracePeriod = Int(objItem.GracePeriodRemaining / 1440)
+		Wscript.Echo "Grace period  : " & intGracePeriod & " days left"
+		Select Case objItem.LicenseStatus
+			Case 0 
+				Wscript.Echo "LicenseStatus : Unlicensed"
+				IsWinActivated = False
+			Case 1 
+				Wscript.Echo "LicenseStatus : Licensed"
+				IsWinActivated = True
+			Case 2 
+				Wscript.Echo "LicenseStatus : Out-Of-Box Grace Period"
+				IsWinActivated = False
+			Case 3 
+				Wscript.Echo "LicenseStatus : Out-Of-Tolerance Grace Period"
+				IsWinActivated = False
+			Case 4 
+				Wscript.Echo "LicenseStatus : Non-Genuine Grace Period"
+				IsWinActivated = False
+		End Select
+		' El sistema tiene un product key 
+		IsWinProductKey = True
+		Wscript.Echo "determinar si el product key del sistema es el mismo que el definido en variable "
+		If PARTIALKEY = OLDPARTIALKEY Then
+    		Wscript.Echo "La clave del producto es la misma" & OLDPARTIALKEY & "-"  & PARTIALKEY 
+    		isPartialKeyEqual = True    		
+		Else
+    		Wscript.Echo "La clave del producto es distinta" & OLDPARTIALKEY & "-"  & PARTIALKEY 
+    		isPartialKeyEqual = False
+		End If
+	' IsWinActivated = True   and isPartialKeyEqual = True   -> no hacer nada.
+	' IsWinActivated = True   and isPartialKeyEqual = False   -> no hacer nada, pero puede ser que sea necesario cambiarla.
+	' IsWinActivated = False  and isPartialKeyEqual = True   -> activar
+	' IsWinActivated = False  and isPartialKeyEqual = False  -> elimnar product key y activar
+
+	' IsWinActivated = False and IsWinProductKey = False  -> activar
+		Wscript.Echo
+	End if
+Next
+
+IF IsWinActivated = True then 
+	Wscript.Echo "IsWinActivated =  True"
+	Wscript.Echo "El windows esta activado"
+END IF
+
+IF IsWinActivated = False and isPartialKeyEqual = True then 
+	Wscript.Echo "IsWinActivated = False and isPartialKeyEqual= True"
+	ActivateProductKey()
+	IsWinActivated = True
+	IsWinProductKey = True
+END IF
+
+IF isPartialKeyEqual = False then
+	Wscript.Echo "isPartialKeyEqual = False"
+	Wscript.Echo "Unisntaller product key"
+	UnInstallProductKey()
+	Wscript.Echo "Installer product key"
+	InstallProductKey()
+	Wscript.Echo "Activate product key"
+	ActivateProductKey()
+	IsWinActivated = True
+	IsWinProductKey = True	
+	isPartialKeyEqual = True
+END IF
+
+
+WScript.Echo "Hit return to continue ..."
+'UserInput = WScript.StdIn.ReadLine
+EOF
+
+sed "s|winmgmts:|winmgmts:\\\|g" "${FILENAME}.tmp" > "${FILENAME}"
+
+unix2dos "$FILENAME"
+rm "${FILENAME}.tmp"
+
+
+#Incluir llamada en el scripts ogRunOnce
+DIR="${DIR}/runOnce"
+NAMECALLER=ogRunOnce.cmd
+FILENAME="$DIR/$NAMECALLER"
+mkdir -p "$DIR"
+
+#Incluir llamada en el scripts ogRunEver
+#DIR="${DIR}/runEver"
+#NAMECALLER=ogRunEver.cmd
+#FILENAME="$DIR/$NAMECALLER"
+#mkdir -p "$DIR"
+
+
+[ -f "$FILENAME" ] || touch "$FILENAME"
+cat >> "$FILENAME" << EOF
+rem echo "run activate Win" > "C:\Program Files (x86)\agua\aguac\scripts\runMSWinActivateKMS.log"
+rem cscript "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+rem echo "run activate Win Fin" > "C:\Program Files (x86)\agua\aguac\scripts\runMSWinActivateKMS_fin.log"
+rem del "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+EOF
+
+unix2dos "$FILENAME"
+
+
+}
+
+
+
+function ogSetWinMSOfficeActivate() {
+
+# Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+
+
+#DIR scripts-AGUA
+MOUNTPOINT=$(ogMount $1 $2)
+DIR="${MOUNTPOINT}/Program Files (x86)/agua/aguac/scripts"
+mkdir -p "${DIR}"
+#NOMBRE scritps-AGUA
+NAME=MSOfficeActivate.vbs
+FILENAME="${DIR}/$NAME"
+
+
+cat > "$FILENAME".tmp << EOF
+' Ejecuat siempre como cscript
+'version adv 004
+
+If InStr(1,WScript.FullName, "wscript", 1) Then 
+CreateObject("WScript.Shell").Run "cscript.exe //NoLogo " _ 
+& WScript.ScriptFullName, 1, False 
+WScript.Quit 
+End If 
+
+strComputer = "."
+IsOfficeActivated = False
+IsOfficeProductKey = False
+isPartialKeyEqual = False
+KEY = "xxxxx"
+PARTIALKEY = "HTV3K"
+OLDPARTIALKEY = "xxxx" 
+ 
+ 
+Function InstallProductKey2016()
+    Wscript.Echo "Instalar product key y Activar producto Microsoft: Office2016"
+	set objShell = CreateObject("WScript.Shell")	
+	'comprobar con comillado doble como escape 
+	objShell.run "cscript ""C:\Program Files\Microsoft Office\Office16\ospp.vbs"" /act"
+	Wscript.Echo "finalizando la activacion Office 2016"
+	IsWinActivated = True
+	IsWinProductKey = True
+End Function
+ 
+ Function InstallProductKey2013()
+    Wscript.Echo "Instalar product key y Activar producto Microsoft: Office2013"
+	set objShell = CreateObject("WScript.Shell")	
+	'comprobar con comillado doble como escape 
+	objShell.run "cscript ""C:\Program Files\Microsoft Office\Office15\ospp.vbs"" /act"
+	Wscript.Echo "finalizando la activacion Office 2013"
+	IsWinActivated = True
+	IsWinProductKey = True
+End Function
+ 
+Function InstallProductKey()
+    Wscript.Echo "Instalar product key y Activar producto Microsoft: Office"
+	set objShell = CreateObject("WScript.Shell")	
+	'comprobar con comillado doble como escape 
+	objShell.run "cscript ""C:\Program Files\Microsoft Office\Office14\ospp.vbs"" /act"
+	Wscript.Echo "finalizando la activacion"
+	IsWinActivated = True
+	IsWinProductKey = True
+End Function
+
+Function UnInstallProductKey()
+	Wscript.Echo "IsOfficeActivated = False  an isPartialKeyEqual = False  -> elimnar product key"
+	set objShell = CreateObject("WScript.Shell")
+    'objShell.run "cscript ospp.vbs /unpkey:HTV3K"
+	Wscript.Echo "realizando parada"
+	Wscript.Sleep 22000 'Sleeps for 12 seconds
+End Function
+
+
+Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+
+Set colItems = objWMIService.ExecQuery  ("SELECT * FROM Win32_OperatingSystem",,48) 
+For Each objItem in colItems
+    Wscript.Echo "Windows : " & objItem.Caption
+	Wscript.Echo "Version       : " & objItem.Version
+next
+	
+Set colItems = objWMIService.ExecQuery _
+    ("Select * From OfficeSoftwareProtectionProduct")	
+For Each objItem in colItems
+' Mostrar informaci�n si encuentra un "product key de office"
+	if not IsNull(objItem.PartialProductKey)  Then 
+		Wscript.Echo "Name          : " & objItem.Name
+		Wscript.Echo "Description   : " & objItem.Description
+		OLDPARTIALKEY = objItem.PartialProductKey 
+		'Wscript.Echo "Partial key   : " & objItem.PartialProductKey
+		Wscript.Echo "OLD Partial key   : " & OLDPARTIALKEY
+		intGracePeriod = Int(objItem.GracePeriodRemaining / 1440)
+		Wscript.Echo "Grace period  : " & intGracePeriod & " days left"
+		Select Case objItem.LicenseStatus
+			Case 0 
+				Wscript.Echo "LicenseStatus : Unlicensed"
+				IsOfficeActivated = False
+			Case 1 
+				Wscript.Echo "LicenseStatus : Licensed"
+				IsOfficeActivated = True
+			Case 2 
+				Wscript.Echo "LicenseStatus : Out-Of-Box Grace Period"
+				IsOfficeActivated = False
+			Case 3 
+				Wscript.Echo "LicenseStatus : Out-Of-Tolerance Grace Period"
+				IsOfficeActivated = False
+			Case 4 
+				Wscript.Echo "LicenseStatus : Non-Genuine Grace Period"
+				IsOffieActivated = False
+		End Select
+		' El sistema tiene un product key 
+		IsOfficeProductKey = True
+		Wscript.Echo "determinar si el product key del office es el mismo que el definido en variable "
+		If PARTIALKEY = OLDPARTIALKEY Then
+    		Wscript.Echo "La clave del producto es la misma" & OLDPARTIALKEY & "-"  & PARTIALKEY 
+    		isPartialKeyEqual = True    		
+		Else
+    		Wscript.Echo "La clave del producto es distinta" & OLDPARTIALKEY & "-"  & PARTIALKEY 
+    		isPartialKeyEqual = False
+		End If
+	' IsOfficeActivated = True   and isPartialKeyEqual = True   -> no hacer nada.
+	' IsOfficeActivated = True   and isPartialKeyEqual = False   -> no hacer nada, pero puede ser que sea necesario cambiarla.
+	' IsOfficeActivated = False  and isPartialKeyEqual = True   -> activar
+	' IsOfficeActivated = False  and isPartialKeyEqual = False  -> elimnar product key y activar
+
+	' IsOfficeActivated = False and IsWinProductKey = False  -> activar
+		Wscript.Echo
+	End if
+Next
+
+
+IF IsOfficeActivated = True then 
+	Wscript.Echo "IsOfficeActivated = True"
+	Wscript.Echo "El office está activado"
+	IsWinActivated = True
+	IsWinProductKey = True
+END IF
+
+IF IsOfficeActivated = False and isPartialKeyEqual = True then 
+	Wscript.Echo "IsOfficeActivated = False and isPartialKeyEqual= True"
+	InstallProductKey()
+	IsWinActivated = True
+	IsWinProductKey = True
+END IF
+
+IF IsOfficeActivated = False and isPartialKeyEqual = False then
+	Wscript.Echo "IsOfficeActivated = False and isPartialKeyEqual = False"
+	UnInstallProductKey()
+	InstallProductKey()
+	IsOfficeActivated = True
+	IsOfficeProductKey = True	
+END IF
+
+IF IsOfficeActivated = False and IsOfficeProductKey = False then
+	Wscript.Echo "IsOfficeActivated = False and IsOfficeProductKey = False"
+	InstallProductKey()
+	IsOfficeActivated = True
+	IsOfficeProductKey = True
+END IF
+
+InstallProductKey2013()
+InstallProductKey2016()
+
+WScript.Echo "Hit return to continue ..."
+'UserInput = WScript.StdIn.ReadLine
+EOF
+
+
+sed "s|winmgmts:|winmgmts:\\\|g" "${FILENAME}.tmp" > "${FILENAME}"
+
+unix2dos "$FILENAME"
+rm "${FILENAME}.tmp"
+
+
+
+#Incluir llamada en el scripts ogRunOnce
+#DIR="${DIR}/runOnce"
+#NAMECALLER=ogRunOnce.cmd
+#FILENAME="$DIR/$NAMECALLER"
+#mkdir -p "$DIR"
+
+#Incluir llamada en el scripts ogRunEver
+DIR="${DIR}/runEver"
+NAMECALLER=ogRunEver.cmd
+FILENAME="$DIR/$NAMECALLER"
+mkdir -p "$DIR"
+
+
+
+[ -f "$FILENAME" ] || touch "$FILENAME"
+cat >> "$FILENAME" << EOF
+rem cscript "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+rem del "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+EOF
+
+unix2dos "$FILENAME"
+
+
+
+}

@@ -1,0 +1,135 @@
+#!/bin/bash
+#/**
+#      smartPartition.template
+#@brief  particiona los clientes del laboratorio virtual.
+#@param 1
+#@ejemplo:
+#@return: Scripts de ejemplo para establecer particionado según tamaño.
+#@exception OG_ERR_ NOTFOUND      Disco duro no encontrador.
+#@note
+#@todo:
+#@version 0.1 primera version
+#@author  adv
+#@date    2018/07/08
+#@version 0.1a revisada la estructra
+#@author  adv
+#@date    2018/07/08
+
+
+#Calculamos el numero de discos
+NDISK=$(ogDiskToDev | wc -w)
+#Si no hay discos, error
+[ -z $NDISK ] && exit $(ogRaiseError $OG_ERR_NOTFOUND "ogDiskToDev | wc -w")
+#asignamos contador desde el primer disco de OpenGnsys
+COUNTER=1
+
+#Paso 1: creamos tabla de particionado MSDOS a todos los discos duros.
+until [ $COUNTER -gt $NDISK ]; do
+    ogUnmountAll $COUNTER
+    ogDeletePartitionTable $COUNTER
+    ogCreatePartitionTable $COUNTER MSDOS
+    ogUpdatePartitionTable $COUNTER
+    let COUNTER=COUNTER+1
+done
+
+#Paso 2: Establecemos las Particiones Segun el numero de discos.
+                #establecemos rangos de las capacidades con expresiones regulares:  https://goo.gl/gJnK7g
+case $NDISK in
+        1)
+                #Calcular el tamaño máximo del disco duro redondeando a la baja en 500 MB para evitar problemas de calculo"
+                #SIZE_DISK1=$(expr $(ogGetDiskSize 1) - 500000)
+                #Calcular el tamaño máximo del disco duro 1
+                SIZE_DISK1=$(ogGetDiskSize 1)
+
+                #discos de 80 GB -> og:110a 78.125.000 - entre 77 y 79GB  - DELL
+                ogCheckStringInReg $SIZE_DISK1 "^7[7-9][0-9]{6}$" &&  MODEL=TipoA
+
+                #discos de 160 GB -> og:110a 156.290.904  -> entre 155 y 159GB - lt3-65
+                ogCheckStringInReg $SIZE_DISK1 "^15[5-9][0-9]{6}$" &&  MODEL=TipoB
+
+                #discos de 310 GB -> og:110a 312.571.224  -> entre 310 y 315 - ACER
+                ogCheckStringInReg $SIZE_DISK1 "^31[0-5][0-9]{6}$" &&  MODEL=TipoC
+
+                #discos de 500 GB -> og:110a entre 468.851.544 y 488.386.585  - filtramos entre 460 GB y 669 GB
+                ogCheckStringInReg $SIZE_DISK1 "[4-6][5-6][0-9]{7}$" &&  MODEL=TipoD
+
+                #discos de 1TB -> og:110a  976.762.584 
+                ogCheckStringInReg $SIZE_DISK1 "^9[7-9][0-9]{7}$" &&  MODEL=TipoE
+
+        ;;
+        2)
+                #Calcular el tamaño máximo del disco duro redondeando a la baja en 500 MB para evitar problemas de calculo"
+                #SIZE_DISK1=$(expr $(ogGetDiskSize 1) - 500000)
+                #Calcular el tamaño máximo del disco duro 1
+                SIZE_DISK1=$(ogGetDiskSize 1)
+                #Calcular el tamaño máximo del disco duro redondeando a la baja en 500 MB para evitar problemas de calculo"
+                SIZE_DISK2=$(expr $(ogGetDiskSize 1) - 500000)
+                #Calcular el tamaño máximo del disco duro 
+                SIZE_DISK1=$(ogGetDiskSize 1)
+
+                #discos 1 de 250 GB  -> og:110a  250.059.096 -> 
+                ogCheckStringInReg $SIZE_DISK1 "^2[5-6][0-9]{7}$" &&  MODEL=TipoF
+        ;;
+esac
+
+echo $MODEL
+
+#Paso 3: El particionado para los sistemas operativos 
+        #Requiere tener una tabla de particiones previa.
+case $MODEL in
+     TipoA)
+        echo "disco de 80 GB  NTFS:78GB CACHE:100MB; DELL"
+        initCache 1 4 100000 NOMOUNT;
+        ogCreatePartitions 1  NTFS:78000000 EMPTY:0 EMPTY:0;
+     ;;
+     TipoB)
+        echo "disco de 160 GB  NTFS:80GB CACHE:75GB; lt3-65"
+        exit
+        initCache 1 4 75000000 NOMOUNT;
+        ogCreatePartitions 1  NTFS:80000000 EMPTY:0 EMPTY:0;
+     ;;
+     TipoC)
+        echo "disco de 310 GB  NTFS:150GB LINUX:50GB CACHE:100GB; ACER en aula 1 y aula 3-4"
+        initCache 1 4 100000000 NOMOUNT;
+        ogCreatePartitions 1 NTFS:150000000 LINUX:50000000 EMPTY:0;
+     ;;
+     TipoD)
+        echo "disco de 500 GB  NTFS:150GB LINUX:50GB CACHE:250GB; ACER en aula 1 y aula 3-4"
+        initCache 1 4 250000000 NOMOUNT;
+        ogCreatePartitions 1 NTFS:150000000 LINUX:50000000 EMPTY:0;
+     ;;
+        TipoE)
+        echo "disco de 1 TB  NTFS:150GB LINUX:50GB CACHE:800GB; ACER en aula 1 y aula 3-4"
+        initCache 1 4 750000000 NOMOUNT;
+        ogCreatePartitions 1 NTFS:150000000 LINUX:50000000 EMPTY:0;
+     ;;
+        TipoF)
+        echo "disco 1 SDD de 250 GB y segundo disco de 500 GB"
+        exit
+        initCache 2 4 350000000 NOMOUNT;
+        ogCreatePartitions 2 NTFS:100000000 EMPTY:0;
+        ogCreatePartitions 1 NTFS:150000000 NTFS:100000000 EMPTY:0;
+     ;;
+esac
+
+ogListPartitions 1
+
+
+#Paso 4:  Establecemos bootloader  a cada disco.
+COUNTER=1
+until [ $COUNTER -gt $NDISK ]; do
+        ogBootMbrGeneric $COUNTER
+        ogSetPartitionActive 1 $COUNTER
+        ogListPartitions $COUNTER
+        ogGetPartitionActive $COUNTER
+        let COUNTER=COUNTER+1
+done
+
+#montamos la cache
+ogMountCache || ogFormatCache
+ogMountCache
+
+updateBootCache
+
+
+

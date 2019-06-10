@@ -1,0 +1,68 @@
+
+
+function ogSetLnxInterface ()
+{
+          local DIR NAME FILENAME
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1"
+    return
+fi
+
+# Error si no se reciben 2 parámetros.
+[ $# == 2 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+# Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+NAME=interfaces
+DIR="$PART/etc/network/"
+FILENAME="$DIR$NAME"
+
+
+touch "$FILENAME"
+cat > "$FILENAME" << EOF
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+#iface eth0 inet dhcp
+EOF
+}
+
+function ogSetLnxEVLT ()
+{
+
+local DIR NAME FILENAME
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1"
+    return
+fi
+
+# Error si no se reciben 2 parámetros.
+[ $# == 2 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+# Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+
+# En algunos equipos no soporta una resolucion espec�fica.
+# se reescribe el fichero con los datos originales de la imagen, por mantener el historico.
+# luego la borramos.
+NAME=".xprofile"
+DIR="$PART/home/usuario/"
+FILENAME="$DIR$NAME"
+touch "$FILENAME"
+cat > "$FILENAME" << EOF
+xrandr --output VGA-0 --mode 1024x768 --rate 60
+EOF
+rm  "$FILENAME"
+}

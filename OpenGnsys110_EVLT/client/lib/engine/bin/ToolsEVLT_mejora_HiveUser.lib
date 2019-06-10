@@ -1,0 +1,105 @@
+#/**
+#         ogGetHivePath path_mountpoint [str_hive|str_user]
+#@brief   Función básica que devuelve el camino del fichero con una sección del registro.
+#@param   path_mountpoint  directorio donde está montado el sistema Windows
+#@param   str_hive         sección del registro
+#@return  str_path - camino del fichero de registro
+#@exception OG_ERR_FORMAT    Formato incorrecto.
+#@exception OG_ERR_NOTFOUND  Fichero de registro no encontrado.
+#@note    hive = { DEFAULT, SAM, SECURITY, SOFTWARE, SYSTEM, COMPONENTS, NombreDeUsuario }
+#@warning El sistema de archivos de Windows debe estar montada previamente.
+#@version 1.0.1 - Nueva función
+#@author  Ramon Gomez, ETSII Universidad de Sevilla
+#@date    2011-05-18
+#@version 1.1.0 - Soportar registro de un usuario local.
+#@author  Ramon Gomez, ETSII Universidad de Sevilla
+#@date    2015-10-14
+#*/ ##
+function ogGetHivePathNew ()
+{
+# Variables locales.
+local FILE HIVE
+
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME path_mountpoint [str_hive|str_user]" \
+           "$FUNCNAME /mnt/sda1 SOFTWARE  =>  /mnt/sda1/WINDOWS/System32/config/SOFTWARE" \
+           "$FUNCNAME /mnt/sda1 user1  =>  /mnt/sda1/Users/user1/NTUSER.DAT"
+    return
+fi
+# Error si no se reciben 2 parámetros.
+[ $# == 2 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+
+# Camino del fichero de registro de usuario o de sistema (de menor a mayor prioridad).
+FILE="$(ogGetPath "/$1/Windows/System32/config/$2")"
+[ -z "$FILE" ] && FILE="$(ogGetPath "/$1/Users/$2/NTUSER.DAT")"
+[ -z "$FILE" ] && FILE="$(ogGetPath "/$1/winnt/system32/config/$2")"
+[ -z "$FILE" ] && FILE="$(ogGetPath "/$1/Documents and Settings/$2/NTUSER.DAT")"
+[ -f "$FILE" ] && echo "$FILE" || ogRaiseError $OG_ERR_NOTFOUND "$1 $2" || return $?
+}
+
+
+function ogGetHivePath ()
+{
+           # Variables locales.
+           local FILE FILENT FILEXP
+
+           # Si se solicita, mostrar ayuda.
+           if [ "$*" == "help" ]; then
+           ogHelp "$FUNCNAME" "$FUNCNAME path_mountpoint str_hive"
+           "$FUNCNAME /mnt/sda1 SOFTWARE  => /mnt/sda1/WINDOWS/System32/config/SOFTWARE"
+           return
+           fi
+           
+           # Error si no se reciben 2 parámetros.
+           [ $# == 2 ] || ogRaiseError $OG_ERR_FORMAT || return $?
+          
+           # Camino del fichero de registro en NT/2000 o XP/Vista/7.
+           FILENT=$(ogGetPath "/$1/winnt/system32/config/$2")
+           [ -f $FILENT ] && FILE="$FILENT"
+          
+           FILEXP=$(ogGetPath "/$1/windows/system32/config/$2")
+           [ -f $FLEHXP ] && FILE="$FILEXP"
+
+           #ADV  Buscar NTUSER.DAT en c:\USER comenzamos con la modificcion 228-236 ojo con las comillas.
+           if  ! [  -f "$FILE" ] 
+           then
+	           FILEUSER=$(ogGetPath "/$1/Documents\ and\ Settings/$2/NTUSER.DAT")
+    	       [ -f "$FILEUSER" ] && FILE="$FILEUSER"
+           fi
+        
+           #ADV Buscar NTUSER.MAN en c:\USER
+        	 if  ! [  -f "$FILE" ] 
+             then
+            	 FILEUSER=$(ogGetPath "/$1/Documents\ and\ Settings/$2/NTUSER.MAN")
+                 [ -f "$FILEUSER" ] && FILE="$FILEUSER"
+             fi
+             
+             #ADV buscamos en el Mandatory
+             #analizar el parametro $2 y detectar que sea compuesto alumnos.V2
+             if  ! [ -f "$FILE" ]
+             then 
+             	#if [ "$2" == "alumnos.V2" ] 
+             	if [ "$2" == "Usuario_UMA.V6" ] 
+                then
+                	FILEUSER=$(ogGetPath "/$1/Profiles/$2/NTUSER.MAN")
+                    [ -f "$FILEUSER" ] && FILE="$FILEUSER"
+                fi                                                                      
+             fi 
+             
+              if  ! [ -f "$FILE" ]
+             then 
+             	#if [ "$2" == "alumnos.V2" ] 
+             	if [ "$2" == "Usuario_UMA.V6" ] 
+                then
+                	FILEUSER=$(ogGetPath "/$1/Profiles/$2/NTUSER.DAT")
+                    [ -f "$FILEUSER" ] && FILE="$FILEUSER"
+                fi                                                                      
+             fi 
+             
+             #adv 
+             [ ! -f "$FILE" ] && ogRaiseError OG_ERR_NOTFOUND "$1,$2" && return $?
+             #fin adv
+                                      
+         echo "$FILE"
+}

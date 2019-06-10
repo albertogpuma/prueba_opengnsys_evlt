@@ -1,0 +1,27 @@
+### estas variables se cargan invocando disco y partcion
+#source $OGETC/os.cfg $DISK $PART
+VERSION=""
+ADMIN=""
+PASSADMIN=""
+USER=""
+PASSUSER=""
+
+ADMIN=test
+PASSADMIN=
+
+ogGetPath $1 $2 "/Windows/zabbix_agentd.conf" && PASSADMIN=
+ogGetPath $1 $2 "/zabbix_agentd.conf" && PASSADMIN=
+
+USER=alumnos
+PASSUSER=
+#PAra el windows 10 EDUCACIONAL 2017
+ogGetPath $1 $2 "/Windows/util/vEVLT.cfg.txt" &&
+VERSION=$(cat $(ogMount $1 $2)/Windows/util/vEVLT.cfg.txt | grep ^VERSION:.*10)
+if ! [ -z $VERSION ]
+then
+   ADMIN=
+   PASSADMIN=
+   USER=
+   PASSUSER=
+fi
+

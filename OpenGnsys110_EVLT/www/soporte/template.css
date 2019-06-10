@@ -1,0 +1,2163 @@
+/* Cabecera flexible (jbasco - 2015.07) */
+body, html {
+    background-color: #f3f2f2;
+}
+
+body {
+    color: black;
+    font-size: 13px;
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    margin: 0px;
+    padding-top: 0px;
+    line-height: 1.2em;
+}
+
+html {
+    margin-left: 0.4em;
+    margin-right: 0.4em;
+}
+
+html > body.evlt {
+    max-width: 990px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+html > body div {
+    text-align: left;
+}
+
+div#cabeceraUMA {
+    width: 100%;
+    background-color: #00346b;
+    background-repeat: repeat-x;
+    color: #808080;
+    display: table;
+}
+
+div#cabeceraUMA > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+header#zona_cabecera {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    line-height: 0.7em;
+}
+
+div#cabeceraUMA #zona_centro .textocentro {
+    color: white;
+    display: block;
+    margin-bottom: 0.3em;
+    font-size: 1.05em;
+}
+
+header#page-header {
+    margin-top: 0em !important;
+}
+
+header#zona_cabecera.navbar ul.breadcrumb {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px;
+}
+
+.navbar ul.breadcrumb > li > .divider {
+    padding: 0.2em;
+}
+
+h1,
+div.bfPage-m form,
+.article_column, .section_column, .category_column,
+div.moduletable_menu,
+h2.contentheading,
+h2.headingblock.header.contentheading_CAV,
+ .sideblock,
+h2.headingblock,
+.block,
+.navbar-fixed-top {
+    margin-bottom: 7px;
+}
+
+.container-fluid {
+    margin-top: 7px;
+}
+
+div#cabeceraUMA #zona_logos_CV {
+    text-align: center;
+}
+
+div#zona_logo_UMA img#logouma_ordenador {
+    margin: 10px 0px 10px 10px;
+}
+
+div#cabeceraUMA div#zona_centro,
+div#cabeceraUMA div#zona_logos_CV,
+div#cabeceraUMA div#zona_opciones_generales {
+    width: auto;
+}
+
+div#cabeceraUMA .espacio_entre_zonas {
+    width: 33.33333%;
+}
+
+div#cabeceraUMA div#zona_centro .wrapper_centro {
+    white-space: nowrap;
+}
+
+div#cabeceraUMA div#zona_opciones_generales {
+    text-align: right;
+}
+
+div#cabeceraUMA #zona_opciones_generales p {
+    white-space: nowrap;
+    text-align: right;
+    margin-right: 1em;
+}
+
+div#zona_centro a#url_centro_ordenador,
+div#zona_centro a#url_centro_ordenador {
+    display: inherit;
+}
+
+div#zona_centro a#url_centro_movil,
+div#zona_logo_UMA img#logouma_movil {
+    display: none;
+    margin: 0px;
+}
+
+div#cabeceraUMA li {
+    display: inline;
+}
+
+div#cabeceraUMA li + li::before {
+    content: " | ";
+    color: white;
+}
+
+div#cabeceraUMA .separador {
+    color: white;
+    font-weight: bold;
+}
+
+div#boton_moviles,
+#zona_opciones_moviles,
+div#cabeceraUMA #divCVmini {
+    display: none;
+}
+
+div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea {
+    display: table;
+    clear: both;
+}
+
+div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea > div {
+    display: table-cell;
+    vertical-align: middle;
+    font-family: Helvetica, Arial, Verdana, sans-serif, sans;
+    line-height: 1.4em;
+    letter-spacing: 0em;
+}
+
+div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea div#cv_link {
+    font-size: 22.5px;
+    white-space: nowrap;
+    padding-top: 1px;
+}
+
+div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea div#devlt_link {
+    text-align: left;
+    font-size: 11px;
+    line-height: 14px;
+}
+
+div#cabeceraUMA #zona_logos_CV img {
+    float: left;
+}
+
+div#cabeceraUMA li {
+    display: inline;
+}
+
+div#cabeceraUMA li + li::before {
+    content: " | ";
+    color: white;
+}
+
+div#cabeceraUMA #zona_opciones_generales {
+    font-weight: bold;
+    text-align: right;
+}
+
+div#cabeceraUMA #zona_opciones_generales span.separador {
+    color: white;
+}
+
+div#cabeceraUMA #zona_centro a,
+div#cabeceraUMA #zona_logos_CV a,
+div#cabeceraUMA #zona_opciones_generales a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+div#cabeceraUMA #zona_centro a:link,
+div#cabeceraUMA #zona_logos_CV a:link,
+div#cabeceraUMA #zona_opciones_generales a:link {
+    color: white;
+    text-decoration: none;
+}
+
+div#cabeceraUMA #zona_centro a:hover,
+div#cabeceraUMA #zona_logos_CV a:hover,
+div#cabeceraUMA #zona_opciones_generales a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+div#cabeceraUMA .zona_centro a:visited,
+div#cabeceraUMA .zona_logos_CV a:visited,
+div#cabeceraUMA .zona_opciones_generales a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+header#zona_cabecera {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+}
+
+div#cabeceraUMA #zona_centro .textocentro {
+    color: white;
+    display: block;
+    margin-bottom: 0.3em;
+    font-size: 13px;
+}
+
+div#zona_central,
+div#zona_central div#page,
+div#zona_derecha,
+div#zona_izquierda,
+div.zona_evlt {
+    float: left;
+    width: auto;
+}
+
+div#zona_izquierda {
+    width: 20%;
+}
+
+div#zona_central {
+    width: 79%;
+    margin: 0 0 0 1%;
+    float: right;
+}
+
+div#zona_central * {
+    text-align: justify;
+}
+
+div#zona_derecha {
+    width: 20%;
+    float:right;
+}
+
+div#zona_central div#page {
+     min-width: 79%;
+}
+
+.container-fluid {
+    max-width: none;
+    padding: 0px;
+}
+
+.texto_campusvirtual {
+    display: block;
+    margin: 0.8em 1.6em;
+}
+
+#zona_logo_UMA {
+    text-align: left;
+}
+
+#zona_logo_UMA img {
+    margin: 10px 0px 10px 10px;
+}
+
+div#page-content.row-fluid {
+    
+}
+
+fieldset.coursesearchblock input#shortsearchbox,
+form#coursesearch table tbody tr td input {
+    text-align: center;
+}
+
+fieldset.coursesearchblock input#shortsearchbox,
+form#coursesearch table tbody tr td input {
+    white-space: normal;
+    width: 90%;
+}
+
+fieldset.coursesearchblock input#shortsearchbox,
+form#coursesearch table tbody tr td input#shortsearchbox {
+    text-align: left;
+}
+
+/* Ocultar los iconos de la caja "MenÃº principal" */
+div.block_site_main_menu div.c0 {
+    display: none;
+}
+
+/* Texto de la caja "MenÃº principal" las lineas de un pÃ¡rrafo se ponen algo mÃ¡s juntas*/
+div.block_site_main_menu div.c1 a {
+    line-height: 1em;
+}
+
+/* Se separan los "pÃ¡rrafos" de la caja "MenÃº principal" */
+div.block_site_main_menu li {
+    padding-bottom: 6pt;
+}
+
+/* Ocultar los iconos de la caja "CategorÃ­as de asignaturas" */
+div.block_course_list div.c0 {
+    display: none;
+}
+
+th {
+    font-weight: bold;
+    /* background-color: #E8EBE8; */
+    background-color: #0099CC;
+    color: white;
+    text-align: left;
+    padding-left: 1em;
+    border-spacing: 0px;
+    font-size: 1.1em;
+}
+
+table.evlt_id_table {
+    width: 80%;
+    border: 1px solid #7E79AC;
+    background-color: white;
+    color: #003366;
+}
+
+td.evlt_id_table {
+    color: #08396D;
+    background-color: white;
+}
+
+input {
+    color: #08396D;
+}
+
+h2.headingblock.header.contentheading_CAV,
+h1 {
+    text-align: left;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0.35em;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+h2 {
+  font-size: 1.3em;
+  text-align: left;
+  font-weight: normal;
+  color: #0099CC;
+}
+
+h1,
+h1.componentheading_CAV,
+h2.headingblock.header.contentheading_CAV,
+h2.headingblock.header.contentheading_CAV a,
+h2.contentheading {
+    background-color: #0099CC;
+    border: 1px solid #908FBB;
+    color: #FFFFFF;
+    text-align: left;
+    font-weight: normal;
+    font-size: 21px;
+    line-height: 1.3em;
+    padding: 3px;
+    margin: 0 0 7px 0;
+}
+
+.sideblock .header, .sideblock h2 {
+    font-size: 16px;
+    padding: 3px;
+    background-color: #0099CC;
+    color: #FFFFFF;
+    line-height: 1.3em;
+}
+
+/*
+.sideblock .header div {
+    padding: 3px;
+}
+*/
+
+.sideblock .header {
+    border-color: #908FBB;
+}
+
+div#zona_principal div h2.contentheading_CAV {
+    font-size: 18px;
+}
+
+h2.main  {
+  text-align: left;
+  font-weight: bold;
+  color: #0099CC;
+}
+
+h3 {
+  font-size:1.1em;
+  color: #0099cc;
+}
+
+h4 {
+  font-size:1.0em;
+}
+
+
+/* Se quita el pie segÃºn lo acordado en reuniÃ³n 05-12-2012 */
+#footer {
+    display: none;
+}
+
+.footer_uma {
+    border-top: 1px solid #908fbb;
+    margin: 7px 0 0 0;
+    width: 100%;
+    text-align: center;
+}
+
+.footer_uma_logos,
+.footer_uma_txt {
+    text-align: center;
+}
+
+.footer_uma .footer_uma_logos a img {
+    max-width: 11%;
+    height: auto;
+    padding: 13px 1.25%;
+    vertical-align: middle;
+}
+
+.footer_uma .footer_uma_logos a.wesupport img {
+    max-width: 6%;
+}
+
+.footer_uma .footer_uma_logos a.bequal img {
+    max-width: 7%;
+}
+
+.footer_uma .footer_uma_txt {
+    color: #666666;
+    font-weight: normal;
+    line-height: 1.3em;
+    font-size: 13px;
+}
+
+/* Desaparece la bÃºsqueda de asignaturas en la zona central inferior */
+.coursesearchbox {
+    display: none;
+}
+
+.moduletable_menu {
+    background-color: #FFFFFF;
+    margin-top: 0em;
+    width: 100%;
+}
+
+#active_menu {
+	font-weight:bold;
+}
+
+.moduletable td, .moduletable div,
+.moduletable_menu td, .moduletable_menu div {
+    padding-left:4px;
+}
+
+div.moduletable_menu {
+    border: 1px solid #908FBB;
+}
+
+div.moduletable_menu h3 {
+    background-color: #0099CC;
+    color: #FFFFFF;
+    
+}
+
+div.moduletable_menu td {
+	padding-top: 3px;
+	padding-bottom: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.moduletable {
+    background-color: #FFFFFF;
+}
+
+div.moduletable {
+    border: 1px solid #908FBB;
+}
+
+div.moduletable h3 {
+    background-color: #0099CC;
+    color: #FFFFFF;
+    
+}
+
+div.moduletable td {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+div.title {
+    padding: 0px;
+}
+
+a.cabecera:link, a.cabecera:visited, a.cabecera:hover {
+  font-size: 0px;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  border: none;
+}
+
+/* Esencial para que no deje espacios en blanco en la cabecera de la plataforma - jbasco - 2011.03.24 */
+.grade-report-grader table {
+  font-size: 0px;
+}
+/* Esta clase es la genÃ©rica para los enlaces de todo el sitio.
+Afecta tanto a los enlaces de los bloques laterales, el centro
+y a la barra de navegaciÃ³n incluyendo categorÃ­as de asignaturas en el frontal dlopez - 2012.10.30 */
+a:link, a:visited, button {
+	color: #0C64AB;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #0099cc; /* #FF0000; */
+	text-decoration: none;
+}
+
+
+/* Content - Sections & Categories */
+hr {
+   background: #DDDDDD;
+   padding: 0;
+   margin: 0px 0px 0px 0px;
+}
+
+hr.separator {
+	height: 1px;
+	width: 70px;
+	border: 0px;
+}
+
+table.cabeceraUMA {
+	padding: 0;
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 0.8em;  /* espacio entre cabecera y contenido asignatura */
+}
+
+table.migadepan {
+	border-left: solid 1px #DDDDDD;
+	border-right: solid 1px #DDDDDD;
+	border-top: solid 1px #DDDDDD;
+	border-bottom: solid 1px #DDDDDD;
+	margin-bottom:1em;
+}
+
+table.cabeceraUMA th {
+	font-size: 10px;
+	font-weight: bold;
+	color: #429928;
+	text-align: left;
+	background-repeat: repeat;
+	background-position: left;
+	text-indent: 0.7em;
+	height: 19px;
+	overflow: auto
+}
+
+/* necesario para sobreescribir la configuracion global (problema de espaciado en las imagenes  */
+table.cabeceraUMA td {
+	font-size: 0px;
+}
+
+table.cabeceraUMA td form * {
+	font-size: 8pt;
+}
+
+#layout-table {
+	padding-right: 0px;
+	padding-left: 0px;
+	border-collapse: collapse;
+}
+
+/* fondo de las cabeceras de las cajas que son bloques */
+.cabeceraTablasEvlt {
+	width: 200%;
+	background-image: url(./gradient.jpg);
+	background-repeat: repeat;
+	background-position: left;
+	text-indent: 0.7em;
+	height: 20px;
+	border-bottom: 0px solid #002B5F;
+        border-bottom-style: dashed;
+	overflow: auto;
+	text-align: left;
+}
+
+/* utilizado para rellenar color fondo del nombre de centro de la cabecera */
+.colorFondoCentro {
+	background-image: url(./pixel_ce_down.gif);
+	background-repeat: repeat;
+	background-position: left;
+	text-align: center;
+}
+
+/* ************************** */
+/* estilos propios de moodle  */
+/* ************************** */
+form {
+    margin-bottom: 0;
+}
+
+form.mform {
+    background-color:#ECEBEB;
+}
+div.page {
+    background-color:#ECEBEB;
+}
+
+.content {
+    background-color:#ECEBEB;
+}
+
+.highlight {
+    background-color: #AAFFAA;
+}
+
+/* cabeceras de tablas centrales moodle: categoria cursos, temas... */
+.headingblock {
+    font-weight: bold;
+    font-size: 10px;
+    text-align: left;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+    background-color: #0099CC; /*#D6D9F2;*/
+	background-image: url(./pix/bgazul.jpg);
+    border-top-color: #908FBB;
+    border-right-color: #908FBB;
+    border-bottom-color: #908FBB;
+    border-left-color: #908FBB;
+    color: #FFFFFF;
+}
+
+.contentheading {
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px;
+    background-color: #0099CC;
+    border-color: #908FBB;
+    color: #FFFFFF;
+    font-family: Verdana,Helvetica,sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: left;
+}
+
+.contentheading a {
+    color: #FFFFFF;
+}
+
+.article_column, .section_column, .category_column {
+    background-color: white;
+    border-color: #7E79AC;
+    border-style: solid;
+    border-width: 1px;
+    padding: 1em;
+    line-height: 150%;
+}
+
+div.bfPage-m form {
+    margin-top: 0em;
+    background-color: white;
+    border-color: #7E79AC;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.bfPage-m form div {
+    padding: 0 11px;
+}
+
+/* estilo de la barra de navegacion */
+.breadcrumb-nav,
+.navbar {
+    vertical-align: text-bottom;
+    font-weight: normal;
+    color: #FFFFFF;
+    background-color: #022859;
+    position: relative;
+}
+
+.breadcrumb-nav a:hover,
+.navbar ul.breadcrumb  a:hover {
+    color: #cccccc;
+}
+
+.breadcrumb-nav select,
+.breadcrumb-nav select option,
+.navbar ul.breadcrumb select, .navbar ul.breadcrumb  select option {
+    font-size: 8pt;
+    background-image: none;
+    background-color: #022859;
+    border-color: white;
+    color: white;
+}
+
+.breadcrumb-nav a,
+.navbar ul.breadcrumb a {
+    color: #ffffff;
+}
+
+.breadcrumb-nav,
+.breadcrumb {
+    font-weight: normal;
+    line-height: 20px;
+}
+
+.breadcrumb-nav ul,
+.breadcrumb ul {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+
+
+.breadcrumb-nav,
+.migadepan {
+    border-left: solid 1px #DDDDDD;
+    border-right: solid 1px #DDDDDD;
+    border-top: solid 1px #DDDDDD;
+    border-bottom: solid 1px #DDDDDD;
+}
+
+/* Ojo: si colocas "a:link;" para definir el color de la miga de pan, no funciona.
+La clase ".breadcrumb" debe definirse sin ":link" dlopez - 2012-10-30 */
+.breadcrumb a {
+    color: #ffffff;
+}
+
+.breadcrumb ul {
+	padding-top: 0.25em;
+	padding-bottom: 0.25em;
+}
+
+/* Miga de pan CV */
+.navbar ul.breadcrumb > li > .divider {
+    padding: 0.2em;
+}
+.breadcrumb {
+    background-color: #275484;
+    margin: 0px !important;
+    border-color: #908fbb;
+    border-width: 0px;
+    color: #ffffff;
+    padding: 0.2em 0.35em;
+    vertical-align: text-bottom;
+    border-radius: 0px;
+}
+
+.breadcrumb-nav, .breadcrumb {
+    font-weight: normal;
+}
+
+.breadcrumb-nav {
+    float: none;
+}
+
+.block .header h2,
+.breadcrumb > li {
+    text-shadow: none;
+}
+
+
+.texto_banner a {
+    color: #FFFFFF;
+}
+
+.texto_banner {
+    color: white;
+    font-weight: bold;
+    vertical-align: middle;
+    font-size: 11px;
+    color: #808080;
+    line-height: 12px;
+}
+
+.zona_centro {
+    text-align: left;
+    padding-left: 10px;
+/*    min-width: 280px; */
+    font-size: 10px;
+}
+
+.zona_evlt {
+    text-align: right;
+    padding-right: 32px;
+}
+
+.generaltableheader {
+    background-image: url(./gradient.jpg);
+}
+
+
+
+
+/* cabecera de la tabla de cada bloque calendario, personal,.. */
+.sideblockheading {
+    border-left: solid 1px #DDDDDD;
+    border-right: solid 1px #DDDDDD;
+    border-top: solid 1px #DDDDDD;
+}
+
+.sideblockheadingtext {
+    font-weight: bold;
+    font-size: 10px;
+    color: #429928;
+    text-align: left;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+    background-image: url(./gradient.jpg);
+    background-repeat: repeat;
+    background-position: left;
+}
+
+/* cuerpo de cada bloque: categorias, personas, editar datos */
+.sideblockmain {
+    border-left: solid 1px #DDDDDD;
+    border-right: solid 1px #DDDDDD;
+    border-bottom: solid 1px #DDDDDD;
+    text-align:center;
+}
+
+.outlineheadingblock {
+    background-image: url(./gradient.jpg);
+    border-width: 0px;
+    font-weight: bold;
+    font-size: 10px;
+    color: #429928;
+    text-align: left;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+}
+
+.forumpost {
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+}
+
+.weeklyoutlinecontent {
+    border-color: #B3BBB4;
+    /*border-style: solid;
+    border-width: 1px;
+    border-left: 0px;
+    border-right: 0px;*/
+}
+
+.weeklyoutlinecontenthighlight {
+    border-color: #B9BADF;
+    border-style: solid;
+    border-width: 1px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+.weeklyoutlinecontenthidden {
+    border-color: #B3BBB4;
+    font-size:14px;
+}
+
+.weeklydatetext {
+    font-size: medium;
+    font-weight: bold;
+    color: #B9BADF;
+}
+
+.topicsoutlinecontent {
+    border-color: #B3BBB4;
+    border-style: solid;
+    border-width: 1px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+.topicsoutlinecontenthighlight {
+    border-color: #B9BADF;
+}
+
+.topicsoutlinecontenthidden {
+    border-color: #B3BBB4;
+}
+
+.siteinfocontent {
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+    /* -moz-border-radius: 20px; */
+    padding: 10px;
+}
+
+/* cajas centrales de pagina inicial moodle, entrar sala chat,.. */
+.generalbox {
+    border-top: solid 1px #DDDDDD;
+    /* Evitamos que un banner demasiado grande reduzca los bloques laterales o los desplace fuera de la zona visible sin scroll (jbasco - 2012.12.12) */
+    overflow: hidden;
+}
+
+/* caja central de la pagina inicial */
+.generalboxcontent {
+    border-left: solid 1px #DDDDDD;
+    border-right: solid 1px #DDDDDD;
+    border-bottom: solid 1px #DDDDDD;
+    color: black; /* color: #002B5F; */
+    font-size: 1.05em; /* 10px; */
+    text-align: left;
+}
+
+.noticebox {
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+}
+
+.noticeboxcontent {
+    text-align: center;
+}
+
+.feedbacktext {
+    color: red;
+}
+
+a.dimmed:link {
+    text-decoration: none;
+}
+
+a.dimmed:visited {
+    text-decoration: none;
+}
+
+a.dimmed:hover {
+    text-decoration: none;
+    color: #0099CC;
+}
+
+.dimmed_text {
+    color: #AAAAAA;
+}
+
+.forumpost .header,
+.forumpost .left {
+    background-color: #D6D9F2;
+}
+
+.forumpost td.starter {
+	background-color: #9999CC;
+}
+
+.forumpost .content {
+    background-color: #cccccc;
+}
+
+.forumpostheadertopic {
+
+}
+
+.forumpostheaderpicture {
+}
+
+.forumpostheadername {
+    font-size: small;
+}
+
+.forumpostheaderreplies {
+    font-size: small;
+}
+
+.forumpostheaderdate {
+    font-size: small;
+}
+
+.logininfo {
+	text-align: justify;
+}
+
+.logininfo a:link, .logininfo a:visited {
+   text-decoration: none;
+}
+
+.logininfo a:hover {
+   text-decoration: none;
+   /*font-weight: bold;*/
+}
+
+.homelink {
+    font-size: x-small;
+}
+
+.teacheronly {
+    color: #990000;
+}
+
+.headermain {
+    font-size: large;
+    font-weight: bold;
+}
+
+.headermenu {
+}
+
+.headerhome {
+    background-color:#002967;
+}
+
+.headerhomemain {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.headerhomemenu {
+}
+
+.categorybox {
+    border-width: 1px;
+    border-color: #7e79ac;
+    border-style: solid;
+	background-color: white;
+}
+
+.categoryboxcontent {
+    /*border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;*/
+}
+
+.category.name {
+    /*font-size: larger;*/
+    font-weight: bold;
+    /*background-color:#E8EBE8;*/
+}
+
+.categorybox .category.name {
+	background-color: white;
+}
+
+/* aumenta el espacio antes de las categorÃ­as de nivel 0 ("Curso acadÃ©mico ...") */
+td.category.name:first-child {
+        padding-top: 10pt;
+}
+
+table.categorylist td.category.name {
+        padding-bottom: 6pt;
+        font-size: 100%;
+}
+
+table.categorylist td.course.name {
+        padding-left: 8pt;
+}
+
+div.info b {
+        font-weight: normal;
+}
+
+
+#switchcategory_jump {
+        font-weight: bold;
+}
+
+.categorynumber {
+    font-size: larger;
+    font-weight: bold;
+    background-color:#E8EBE8;
+}
+
+.categorylist {
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+
+.coursename {
+}
+
+.coursebox {
+}
+
+/* caja mymoodle ... */
+.courseboxcontent {
+    border-left: solid 1px #908FBB;
+    border-right: solid 1px #908FBB;
+    border-top: solid 1px #908FBB;
+    border-bottom: solid 1px #908FBB;
+}
+
+.courseboxinfo {
+}
+
+/* enlace automaticos. ejp.: glosario, etc */
+a.autolink:link {
+    text-decoration: none;
+    color: #000000;
+    background-color: #0099cc;
+}
+
+a.autolink:visited {
+    text-decoration: none;
+    color: #000000;
+    background-color: #0099cc;
+}
+
+a.autolink:hover {
+    text-decoration: none;
+    color: red;
+}
+
+.forumheaderlist {
+    border-width: 1px;
+    border-color: #DDDDDD;
+    border-style: solid;
+}
+
+.smallinfo {
+    color: #FF0000
+}
+
+.smallinfohead {
+    color: #555555;
+}
+
+.tabledivider {
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+    border-left: 0px;
+    border-right: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
+}
+
+.headingblockcontent {
+}
+
+table.calendarmini {
+    width: 100%;
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+    font-size: .7em;
+    margin: 0px;
+    padding: 2px;
+    /*-moz-border-radius: 10px;*/
+}
+
+table.calendarmonth {
+    width: 100%;
+    border-width: 1px;
+    border-color:  #DDDDDD;
+    border-style: solid;
+    margin: 0px;
+    padding: 2px;
+    /*-moz-border-radius: 10px;*/
+}
+
+table.calendarmini TBODY TD {
+    text-align: center;
+    vertical-align: middle;
+    border-width: 2px;
+    border-color: #E8EBE8;
+    border-style: solid;
+    /*-moz-border-radius: 4px;*/
+}
+
+table.calendarmonth TBODY TD {
+    width: 14%;
+    border-width: 2px;
+    border-color: #E8EBE8;
+    border-style: solid;
+    vertical-align: top;
+}
+
+table.calendarmonth TBODY TD TABLE {
+	margin-top: 0px;
+	margin-left: 0px;
+	font-size: 0.75em;
+	/*line-height: 1.2em;*/
+}
+
+table.calendarmonth TBODY TD TABLE TD {
+    border: none;
+}
+
+table.calendarmonth TBODY TD DIV {
+	margin-top: 0px;
+	margin-left: 0px;
+	font-size: 0.75em;
+	/*line-height: 1.2em;*/
+}
+
+table.calendarmini THEAD TD {
+    font-size: .95em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.calendarmonth THEAD TD {
+    text-align: center;
+    vertical-align: middle;
+    padding-bottom: 3px;
+    border-bottom: 2px #908FBB solid;
+}
+
+.sideblockmain .cal_event {
+    font-size: 8px;
+    font-weight: normal;
+    color: #002B5F;
+}
+
+.sideblockmain .cal_event_date {
+	font-size: 8px;
+	font-weight: normal;
+	color: #002B5F;
+}
+
+.mycalendar {
+}
+
+.mycalendar .cal_event {
+	font-weight: bold;
+}
+.mycalendar .cal_event_date {
+	font-size: 8px;
+	font-weight: bold;
+	text-align: left;
+}
+
+.mycalendar table.cal_filters {
+    width: 100%;
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+    margin: 0px;
+    padding: 2px;
+}
+
+.mycalendar .cal_filters THEAD TD {
+    border-bottom: 2px #908FBB solid;
+    margin: 0px;
+    padding: 2px;
+}
+
+
+.mycalendar .cal_event_table {
+    width: 100%;
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+    margin: 0px;
+    padding: 2px;
+    /*-moz-border-radius: 10px;*/
+}
+
+.mycalendar .cal_event_table THEAD {
+	background-color: #E8EBE8;
+	text-align: center;
+	font-weight: bold;
+}
+
+.sideblockmain HR {
+	height: 1px;
+	border: none;
+	border-top: 1px #999 solid;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+.mycalendar HR {
+	height: 1px;
+	border: none;
+	border-top: 1px #999 solid;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+.calendarreferer {
+	font-weight: bold;
+}
+
+TD.cal_event_description {
+	width: 80%;
+	border-left: 2px #908FBB solid;
+	vertical-align: top;
+	padding: 5px;
+}
+
+.cal_popup_fg {
+    background-color: #E8EBE8;
+}
+
+.cal_popup_bg {
+    border-top: 2px #E8EBE8 solid;
+    border-left: 2px #E8EBE8 solid;
+    border-right: 2px #B3BBB4 solid;
+    border-bottom: 2px #B3BBB4 solid;
+    padding: 0px;
+    margin: 0px;
+}
+
+.cal_popup_caption {
+    font-size: 75%;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.cal_popup_close {
+	font-size: 75%;
+	font-weight: bold;
+        font-family: sans-serif;
+	margin-right: 5px;
+}
+
+.sideblock .cal_controls {
+	text-align: center;
+	font-size: 9px;
+}
+
+A IMG {
+	border: none;
+}
+
+table.formtable TD {
+	padding: 9px;
+}
+
+.eventfull {
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+}
+
+.eventfullheader {
+}
+
+.eventfullpicture {
+    padding:8px;
+}
+
+.sitetopic {
+    border-width: 1px;
+    border-color: #908FBB;
+    border-style: solid;
+    background-color: #ffffff;
+}
+
+.boton {
+    font-size: 7pt;
+    text-align: center;
+}
+
+/***
+ *** Login
+ ***/
+
+.loginbox {
+  margin-top: 0.7em;
+  background-color: #FFFFFF;
+}
+
+.loginbox .content {
+  border-width:1px;
+  border-style:solid;
+  padding: 0.7em;
+}
+
+.loginform .c1,
+.logintable .c1 {
+  text-align: left;
+}
+
+.loginform .c1 input,
+.logintable .c1 input {
+  width: 6em;
+  font-size: 8pt;
+}
+
+span.next {
+	float: right;
+}
+span.current {
+    width: 60%;
+}
+
+table.minicalendar {
+   width: auto;
+}
+
+table.minicalendar, table.minicalendar TR,
+table.minicalendar TD, table.minicalendar TH,
+TD.event_course {
+   font-size: 1em; /* calibre de las letras del mini calendario 0.9*/
+}
+table.minicalendar TD, table.minicalendar TH {
+   width: auto;
+}
+
+/*Accessibility: resizable icons. */
+img.resize {
+  /*font-size: 1.3em;*/
+  /*
+  width: 1em;
+  height: 1em;
+  */
+}
+
+h2.headingblock, h1.componentheading_CAV, h1.componentheading,
+h2.headingblock.header.contentheading_CAV {
+  margin-top: 0em;
+}
+
+h2.contentheading_CAV {
+    margin-top: 0.2em;
+}
+
+#calendar .event_global,
+#calendar .event_course,
+#calendar .event_group,
+#calendar .event_user,
+.minicalendar .event_global,
+.minicalendar .event_course,
+.minicalendar .event_group,
+.minicalendar .event_user {
+  border:2px solid !important;
+}
+
+#admin-report .plugin,
+#course-report .plugin,
+#course-import .plugin {
+  margin-bottom: 20px;
+  margin-left:10%;
+  margin-right:10%;
+  border-bottom: 0px solid #cecece;
+  border-top: 0px solid #cecece;
+  border-right: 0px solid #cecece;
+  border-left: 0px solid #cecece;
+  background-color: #fdfdfd;
+}
+
+/*
+#middle-column .forumpost .userpicture td.left,
+#middle-column .forumpost .userpicture div.author {
+    display: none;
+}
+*/
+
+#middle-column .forumpost td.left,
+#middle-column .forumpost div.author {
+    /*  display: none;  */
+}
+
+#middle-column {
+    /* Evitamos que un banner demasiado grande reduzca los bloques laterales o los desplace fuera de la zona visible sin scroll (jbasco - 2012.12.12) */
+    max-width: 604px;
+}
+.content {
+   color: black;
+}
+
+.generalboxcontent a:link, .generalboxcontent a:visited {
+    text-decoration: none;
+}
+
+.generalboxcontent a:hover {
+    text-decoration: none;
+    /*font-weight: bold;*/
+}
+
+/* caja mymoodle summary... */
+.courseboxcontent span {
+    /*color: black;*/
+    font-size: 0.9em;
+}
+
+/* caja moodle summary */
+.courseboxsummary {
+}
+
+.userinfobox {
+    border-width: 0px;
+    border-color: #908FBB;
+    border-style: solid;
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #429928;
+    text-align: left;
+}
+
+.userinfoboxside {
+    font-weight: bold;
+    font-size: 1em;
+    color: #429928;
+    text-align: left;
+}
+
+.userinfoboxcontent {
+    font-weight: bold;
+    font-size: 1em;
+    color: #429928;
+    text-align: left;
+}
+
+.userinfoboxsummary {
+    font-weight: bold;
+    font-size: 8px;
+    color: #002967;
+    text-align: left;
+}
+
+.userinfoboxlinkcontent {
+    font-weight: normal;
+    font-size: 6px;
+    color: #429928;
+    text-align: left;
+}
+
+#course-view .section {
+	font-size: 1em;
+}
+
+/*
+#course-view .section .summary  {
+	font-size: 1.2em;
+}
+*/
+
+#course-view .section td {
+	  border-color: #908FBB;
+}
+
+#course-view .section td.content {
+	background: #FFFFFF;
+}
+
+/* lateral izq/dcho de las cajas de un curso */
+#course-view .section td.side {
+	  background: #F0F1FA;
+}
+
+#course-view .current td.side {
+	  background: /*#D6D9F2*/ #a9c0dd;
+}
+
+#course-view .section td.left {
+	  font-size: 11pt;
+}
+
+#course-view .section .spacer {
+	height: 1em;
+}
+
+/* Cajas ocultas de los cursos */
+#course-view .hidden td.content {
+	background: #EFEFEF;
+}
+
+#course-view .hidden td.side {
+  background: #DDDDDD;
+}
+
+.sideblock .content {
+border-top-color: #908FBB;
+border-right-color: #908FBB;
+border-bottom-color: #908FBB;
+border-left-color: #908FBB;
+background-color: #ffffff;
+font-size: 1em; /* 30.04.07 crmas */
+/*line-height: 1em;*/ /* 30.04.07 crmas */
+}
+
+
+/* popup del calendario text*/
+.cal_popup_fg {
+  border-top-color: #908FBB;
+  border-left-color: #908FBB;
+  border-bottom-color: #908FBB;
+  border-right-color: #908FBB;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  background-color:#FFFFFF;
+  font-size: 1.1em;
+}
+
+/* popup del calendario title */
+.cal_popup_bg {
+  border-top-color: #908FBB;
+  border-left-color: #908FBB;
+  border-bottom-color: #908FBB;
+  border-right-color: #908FBB;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  background-color:#FFFFFF;
+  font-size: 1.2em;
+}
+
+li {
+}
+
+/* barra de navegacion izquierda de los contenidos scorm */
+#tocbox .structurelist {
+	font-size: 0.9em;
+	text-align: left;
+}
+
+/* ------ CALENDARIO REVISAR -------- */
+
+#calendar .maincalendar {
+  vertical-align: top;
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-top-color: #dddddd;
+  border-right-color: #dddddd;
+  border-bottom-color: #dddddd;
+  border-left-color: #dddddd;
+  padding-top: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+}
+
+#calendar .sidecalendar {
+  vertical-align: top;
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-top-color: #dddddd;
+  border-right-color: #dddddd;
+  border-bottom-color: #dddddd;
+  border-left-color: #dddddd;
+  padding-top: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+}
+
+
+#calendar {
+  width: 100%;
+  border-spacing: 5px;
+  border-collapse: separate;
+}
+
+#calendar .maincalendar .day {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+table.minicalendar {
+  font-size: 0.85em;
+  border-top-color: #dddddd;
+  border-right-color: #dddddd;
+  border-bottom-color: #dddddd;
+  border-left-color: #dddddd;
+  width: 90%;
+  margin-top: 10px;
+  margin-right: auto;
+  margin-bottom: 10px;
+  margin-left: auto;
+  padding-top: 2px;
+  padding-right: 2px;
+  padding-bottom: 2px;
+  padding-left: 2px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-collapse: separate;
+  border-spacing: 1px;
+}
+
+.minicalendarblock {
+  padding-top: 0px;
+  padding-right: 4px;
+  padding-bottom: 0px;
+  padding-left: 4px;
+}
+
+th.header, td.header, div.header {
+  border-top-color: #dddddd;
+  border-right-color: #dddddd;
+  border-bottom-color: #dddddd;
+  border-left-color: #dddddd;
+}
+
+#calendar div.header {
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+}
+
+#calendar .maincalendar .filters table, #calendar .sidecalendar .filters table, .sideblock.block_calendar_month .filters table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  padding-top: 2px;
+  padding-right: 2px;
+  padding-bottom: 2px;
+  padding-left: 2px;
+  width: 100%;
+  background-color: #eeeeee;
+}
+
+.only_my_courses {
+    font-size:xx-small;
+    font-style:italic;
+    color:#ff9900
+}
+.see_all_courses {
+    font-size:xx-small;
+}
+
+.block_course_list li.r0, .block_course_list li.r0 {
+	padding-top: 4pt;
+	padding-bottom: 4pt;
+}
+
+.notifyproblem {
+  color:#BB0000;
+}
+
+.boxwidthwide {
+  width: 100%
+}
+
+
+td.qnType td {
+       vertical-align: middle;
+       padding-top: 3pt;
+       padding-bottom: 3pt;
+}
+
+
+td.qnType td:first-child {
+       padding-right: 5pt;
+}
+
+
+input[disabled="disabled"]{
+       color: #707070;
+       background-color: #E0E0E0;
+       border:1px solid;
+       border-color: #707070;
+}
+
+#members.select, .group
+#addselect.select, .group
+#removeselect.select, .group {
+  width: 100%;
+}
+
+/*input[att="Activar edici&oacute;n"]*/
+input[name="edit"] + input + input[type="submit"],
+input[name="categoryedit"] + input + input + input[type="submit"]
+ {
+   color: white;
+   font-size: 1em;
+   background-color: orange;
+}
+
+.moduletable td fieldset {
+    border: 0px;
+}
+
+.invisiblefieldset {
+    display:inline;
+    border-width:0;
+    padding:0;
+    margin:0;
+}
+
+/* Aspecto y comportamiento de la zona de software importada del wiki mediante etiquetas (jbasco - 2015.02) */
+table.confluenceTable {
+    background: #AABBDD;
+    padding:0.01em;
+}
+th.confluenceTable, td.confluenceTable {
+    background: white;
+}
+table.confluenceTable th {
+    padding: 0.6em;
+    line-height: 100%;
+}
+table.confluenceTable td.confluenceTd {
+    vertical-align: text-top;
+    background: white;
+    padding: 0.4em;
+}
+
+table.confluenceTable th.confluenceTh h3 {
+    color: white;
+}
+
+
+table.confluenceTable td.confluenceTd ul.content-by-label div {
+    display:inline;
+}
+
+table.confluenceTable td.confluenceTd span.icon-page {
+    display: none;
+}
+
+table.confluenceTable td.confluenceTd ul.content-by-label div.details a {
+    color: black;
+    cursor: default;
+    pointer-events: none;
+    -ms-touch-action: none;
+}
+
+div#cabeceraUMA div#boton_moviles {
+    display: none;
+}
+
+div#page-content.row-fluid {
+    display: inline;
+    width: 100%;
+}
+
+/* Quitamos "Pagina:" de cada elemento de las listas de software (jbasco - 2016.06) */
+table.confluenceTable span.icon.aui-icon.aui-icon-small.aui-iconfont-page-default {
+    display: none;
+}
+
+p.counter,
+ul.pagination {
+    text-align: center;
+    font-size: 0.9em;
+}
+
+ul.pagination li {
+    display: inline;
+}
+
+ul.pagination li:after {
+    content: "|";
+    margin: 0 0.6em;
+}
+ul.pagination li:last-child:after {
+    content: "";
+}
+
+/* No mostrarmos separador de articulos */
+#zona_principal span.article_separator,
+#zona_principal span.row_separator_CAV {
+    display: none;
+}
+
+#zona_principal p.buttonheading {
+    display: table-row-group;
+}
+
+
+body.cv div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea {
+    min-width: 309px;
+}
+
+body.evlt div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea {
+    min-width: 202px;
+}
+
+body.evlt ul.breadcrumb,
+body.evlt div#cabeceraUMA #zona_centro,
+body.evlt div#cabeceraUMA #espacio_entre_zonas2 {
+    display: none;
+}
+
+body.evlt div#zona_central div#page {
+     width: 100%;
+}
+
+/* Si el ancho no es suficiente no muestra EVLT en la cabecera (en portal CV) */
+@media all 
+and (max-width : 899px) {
+    body.cv #cabeceraUMA #zona_logos_CV .zona_logos_CV_linea a#devlt_link {
+        display: none;
+    }
+
+    body.cv div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea,
+    body.cv div#cabeceraUMA #zona_logos_CV {
+        min-width: 0px;
+    }
+}
+
+/* aspecto para moviles */
+@media all 
+and (max-width : 767px) {
+    /* Mostrar las opciones de cabecera para moviles en una sola linea  */
+    .nav-collapse.menumovil.active div.block {
+        line-height: 1.4em !important;
+    }
+
+    .nav-collapse.menumovil.active div.block.opciones_cabecera_extra {
+        border-width: 0px;
+        margin: 0 !important;
+        min-height: 0px;
+    }
+
+    .ie7 .navbar-inner,
+    .ie8 .navbar-inner {
+        min-height: 0px;
+    }
+
+    .nav-collapse.menumovil.active div.block ul.nav.pull-right.content li ul li {
+        display: inline;
+    }
+
+    .nav-collapse.menumovil.active div.block ul.nav.pull-right.content li ul li:not(:last-child):after {
+        content: " | ";
+        margin: 0 0.1em;
+        display: inline;
+    }
+
+    .nav-collapse.menumovil.active div.block.opciones_cabecera_extra li.item_with_icon span.tree_item {
+        white-space: nowrap;
+    }
+
+    .nav-collapse.menumovil .nav {
+        margin: 0.4em 0;
+    }
+
+    .nav-collapse.menumovil .branch {
+        color: #808080;
+    }
+
+    .nav-collapse.menumovil .branch:hover {
+        color: #808080;
+    }
+
+    /* Ocultamos el desplegable de idiomas (jbasco - 2015.06) */
+    .nav-collapse.menumovil.active div.block ul li.langmenu {
+        display: none;
+    }
+
+    .nav-collapse.menumovil.active div.block.opciones_cabecera_extra .content {
+        margin-top: 0px;
+        padding-top: 0px;
+        margin-bottom: 0px;
+        padding-bottom: 0px;
+    }
+
+    .nav-collapse.menumovil.active div.block ul li ul {
+        list-style: outside none none;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .unlist, .unlist li, .inline-list, .inline-list li, .block .list, .block .list li, .section li.activity, .section li.movehere, .tabtree li,
+    .nav-collapse.menumovil.active div.block li {
+        line-height: 1.3em;
+    }
+
+    div#zona_central,
+    div#zona_central div#page,
+    div#zona_derecha,
+    div#zona_izquierda,
+    div.zona_evlt {
+        width: auto;
+        float: none;
+        margin: 0px;
+        min-width: 0px;
+    }
+
+    div#cabeceraUMA div#zona_logo_UMA a img {
+        margin: 0 0 0 5px;
+    }
+
+    #zona_logo_UMA,
+    .texto_campusvirtual {
+        display: block;
+        margin: 0.3em 0.6em;
+    }
+
+    div#zona_opciones_generales {
+        clear: both;
+        float: none;
+    }
+
+    div#cabeceraUMA div#boton_moviles {
+        display: block;
+        float:right !important;
+        margin: 7px 5px 7px 0;
+        border-radius: 4px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #0E5478;
+        color: white;
+        padding: 3.5px 5px;
+        font-size: 1.6em;
+        background-color: transparent;
+        cursor: pointer;
+    }
+
+    div#cabeceraUMA div#boton_moviles p {
+        margin: 3px;
+    }
+
+    div#cabeceraUMA div#boton_moviles .icon-bar {
+        background-color: white;
+        width: 0.8em;
+        width: 25px;
+        height: 3px;
+        display: block;
+        text-align: center;
+        margin-left: 4px;
+    }
+
+    div#zona_logo_UMA {
+        line-height: 1em;
+    }
+
+    div#zona_centro a#url_centro_movil,
+    div#zona_logo_UMA img#logouma_movil {
+        display: inherit;
+    }
+
+    div#zona_centro a#url_centro_ordenador,
+    div#zona_logo_UMA img#logouma_ordenador,
+    #cabeceraUMA #espacio_entre_zonas2 {
+        display: none;
+    }
+
+    div#cabeceraUMA div#boton_moviles.activo {
+        background-color: #367AB5;
+    }
+
+    div#cabeceraUMA div#boton_moviles hr {
+        width: 1.5em;
+    }
+
+    div#cabeceraUMA #zona_centro,
+    div#cabeceraUMA #zona_opciones_generales,
+    #zona_opciones_moviles,
+    div#zona_derecha,
+    div#zona_izquierda {
+        display: none;
+    }
+
+    div#zona_derecha.activo,
+    div#zona_izquierda.activo {
+        display: block;
+    }
+
+    #zona_opciones_moviles.activo {
+        display: block;
+        background-color: white;
+        color: #808080;
+        padding: 0px;
+        width: 100%;
+        text-align: left;
+        font-weight: normal;
+        line-height: 1.4em;
+    }
+
+    #zona_opciones_moviles.activo p {
+        margin: 0.5em 0.4em;
+    }
+    
+    #boton_moviles.activo a:link,
+    #boton_moviles.activo a:visited {
+        font-size: 1em;
+        color: #0C64AB;
+        text-decoration: none;
+        font-weight: normal;
+    }
+
+    #boton_moviles.activo a:hover {
+        color: #0099cc;
+        text-decoration: none;
+        font-weight: normal;
+    }
+
+    #boton_moviles span.separador {
+        color: black;
+    }
+
+    span.opciones_moviles {
+        display: inherit;
+        padding: 2px;
+    }
+
+    span.opciones_ordenador {
+        display: none;
+    }
+
+    .footer_uma .footer_uma_txt {
+        font-size: 10px;
+    }
+}
+
+/* aspecto para moviles con pantalla minuscula */
+@media all 
+and (max-width : 480px) {
+    div#cabeceraUMA #zona_logos_CV #devlt_link {
+        display: none;
+    }
+
+    body.evlt div#cabeceraUMA #zona_logos_CV .zona_logos_CV_linea {
+        min-width: 0px;
+    }
+
+    div#cabeceraUMA #divCVmini {
+        font-size: 1.5em;
+        color: white;
+        margin: 0.2em 0 0 0;
+        width: auto;
+        display: table-cell;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    div#cabeceraUMA #divCVmini a {
+        color: white;
+        display: table-cell;
+    }
+}

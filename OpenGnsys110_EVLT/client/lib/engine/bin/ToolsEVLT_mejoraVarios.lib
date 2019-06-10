@@ -1,0 +1,141 @@
+
+
+function ogChocolateyCopy() {
+
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1 " 
+    return
+fi
+[ $# == 2 ] || return $(ogRaiseError $OG_ERR_FORMAT; echo $?)
+DISK=$1
+PART=$2
+PACKAGE="ChocolateyV00.tar"
+MNT=$(ogMount $DISK $PART)
+if `ogFinCache` 
+then 
+	echo "updateCache REPO /$PACKAGE  TORRENT peer:60 "
+	updateCache REPO /$PACKAGE  TORRENT peer:60 || cp $OGIMG/$PACKAGE $MNT/
+	tar xvf ${OGCAC}${OGIMG}/$PACKAGE -C $MNT
+	echo "tar xvf ${OGCAC}${OGIMG}/$PACKAGE -C $MNT"
+else 
+	echo "cp $OGIMG/$PACKAGE $MNT/"
+	cp $OGIMG/$PACKAGE $MNT/
+	tar xvf $MNT/$PACKAGE -C $MNT
+	echo "tar $MNT/$PACKAGE -C $MNT"
+fi
+}
+
+
+
+function ogChocolateyInstall() {
+DISK=$1
+PART=$2
+ADMIN=administrador
+PASSADMIN=
+USER=alumnos
+PASSUSER=
+POSTCONF=postconf.cmd
+MNT=$(ogMount $1 $2)
+
+
+### Generar minisetup para siguiente inicio en windows
+ogInstallMiniSetup $DISK $PART $POSTCONF $ADMIN $PASSADMIN 1 "$USER" "$PASSUSER"
+
+ogAddCmd $DISK $PART $POSTCONF "cinst -force c:\Chocolatey\packages.config"
+#ogAddCmd $DISK $PART $POSTCONF "shutdown /r"
+}
+
+
+function ogWsusCopy() {
+
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1 " 
+    return
+fi
+[ $# == 2 ] || return $(ogRaiseError $OG_ERR_FORMAT; echo $?)
+DISK=$1
+PART=$2
+PACKAGE="WSUSv01.tar"
+updateCache REPO /$PACKAGE  TORRENT peer:60
+MNT=$(ogMount $DISK $PART)
+tar xvf ${OGCAC}${OGIMG}/$PACKAGE -C $MNT
+echo "tar xvf ${OGCAC}${OGIMG}/$PACKAGE -C $MNT"
+}
+
+
+function ogWsusInstall() {
+DISK=$1
+PART=$2
+ADMIN=administrador
+PASSADMIN=
+USER=alumnos
+PASSUSER=
+POSTCONF=postconf.cmd
+MNT=$(ogMount $1 $2)
+
+
+### Generar minisetup para siguiente inicio en windows
+ogInstallMiniSetup $DISK $PART $POSTCONF $ADMIN $PASSADMIN 1 "$USER" "$PASSUSER"
+
+#ogAddCmd $DISK $PART $POSTCONF "pushd c:\"
+# parece que le falta \ al final
+ogAddCmd $DISK $PART $POSTCONF "SC CONFIG \"wuauserv\" start= demand"
+ogAddCmd $DISK $PART $POSTCONF "net start wuauserv"
+DOTHIS="c:\WSUS\Update.cmd /verify /instie10 /updatecerts /updatecpp /updatedx /instdotnet4"
+ogAddCmd $DISK $PART $POSTCONF "$DOTHIS"
+# Configurar servcio WSUS segun indicacioens EVLT 
+ogAddCmd $DISK $PART $POSTCONF "net stop wuauserv"
+ogAddCmd $DISK $PART $POSTCONF "SC CONFIG \"wuauserv\" start= disabled"
+# Eliminar cache local WSUS
+#ogAddCmd $DISK $PART $POSTCONF "del /FSQ c:\WSUS"
+# Reiniciar.
+#ogAddCmd $DISK $PART $POSTCONF "shutdown /r"
+}
+
+
+
+function ogSetWinRe ()
+{
+local MNTDIR 
+
+#if [ "$*" == "help" ]; then
+#    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition 0(disable) 1(activa)" \
+#           "$FUNCNAME 1 1 0" 
+#    return
+#fi
+
+[ $# == 3 ] || return $(ogRaiseError $OG_ERR_FORMAT; echo $?)
+
+MNTDIR=$(ogMount $1 $2) || return $?
+
+ogAddRegistryKey "$MNTDIR" SOFTWARE "\Policies\Microsoft\Windows\WinRe"
+
+ogAddRegistryValue "$MNTDIR" SOFTWARE "\Policies\Microsoft\Windows\WinRe\DisableSetup"
+
+ogSetRegistryValue "$MNTDIR" SOFTWARE "\Policies\Microsoft\Windows\WinRe\DisableSetup" "$3"
+}
+
+
+
+function ogWindows7CMDreboot() {
+DISK=$1
+PART=$2
+ADMIN=administrador
+PASSADMIN=imagen12w7
+USER=alumnos
+PASSUSER=
+POSTCONF=postconf.cmd
+MNT=$(ogMount $1 $2)
+
+
+### Generar minisetup para siguiente inicio en windows
+ogInstallMiniSetup $DISK $PART $POSTCONF $ADMIN $PASSADMIN 1 "$USER" "$PASSUSER"
+
+#ogAddCmd $DISK $PART $POSTCONF "cinst -force c:\Chocolatey\packages.config"
+ogAddCmd $DISK $PART $POSTCONF "shutdown /r"
+}
+
+
+

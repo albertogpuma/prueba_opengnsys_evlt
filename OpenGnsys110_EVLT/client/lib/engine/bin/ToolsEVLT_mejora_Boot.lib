@@ -1,0 +1,76 @@
+
+
+# ogWindowsTemplateBCD -> EVLT
+
+
+#En caso de errores en BCD usar la plantilla.
+function ogWindowsTemplateBCD ()
+{
+
+#check parametros
+
+#check SISTEMA OPERATVIO
+OSTYPE="$(ogGetOsType $1 $2)"
+OSVERSION="$(ogGetOsVersion $1 $2)"
+
+case "$OSVERSION" in 
+ 	*Windows\ XP) 
+ 		echo "Configuracion del BCD para windows XP"
+    ;;
+	*Windows\ 7*)  
+		echo "Configuracion del BCD para windows W7"
+		TEMPLATEBCD=BCD.win7  	    
+  	;;
+  	*Windows\ 10*) 
+  		echo "Configuracion del BCD para windows 10"
+  		TEMPLATEBCD=BCD.win10
+   	;;
+esac
+
+
+
+MNTPART=$(ogMount $1 $2)
+
+# Check si el loader existe #  msdos efi
+[ ! -f ${MNTPART}/bootmgr ] && cp ${OGLIB}/grub4dos/BCD/bootmgr ${MNTPART}/
+# Check si directorio /Boot existe
+[ ! -d ${MNTPART}/Boot ] && mkdir -p ${MNTPART}/Boot 
+
+
+#creamos copias iniciales .OG
+[ -f ${MNTPART}/Boot/BCD.Backup.0001 -a ! -f ${MNTPART}/Boot/BCD.Backup.0001.OG ] && cp ${MNTPART}/Boot/BCD.Backup.0001 ${MNTPART}/Boot/BCD.Backup.0001.OG
+[ -f ${MNTPART}/Boot/BCD -a ! -f ${MNTPART}/Boot/BCD.OG  ] && cp ${MNTPART}/Boot/BCD ${MNTPART}/Boot/BCD.OG
+
+#usamos la plantilla BCD de opengnsy
+[ -f ${OGLIB}/grub4dos/BCD/$TEMPLATEBCD ] && cp ${OGLIB}/grub4dos/BCD/$TEMPLATEBCD ${MNTPART}/Boot/BCD
+
+ogFixBootSector $1 $2
+        # Configurar el gestor de arranque de Windows XP/Vista/7.
+        ogWindowsBootParameters $1 $2
+        # Registrar en Windows que la partición indicada es su nueva unidad C:\
+        ogWindowsRegisterPartition $1 $2 C $1 $2   
+
+
+}
+
+
+
+
+#muestra contendio del binario del MBR
+function ogGetBootMbr ()
+{
+# Variables locales.
+local DISK
+	
+# Si se solicita, mostrar ayuda.
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk " \
+           "$FUNCNAME 1 "
+    return
+fi
+# Error si no se recibe 1 parámetro.
+[ $# == 1 ] || return $(ogRaiseError $OG_ERR_FORMAT; echo $?) 
+
+DISK="$(ogDiskToDev $1)" || return $?
+ms-sys -f $DISK
+}

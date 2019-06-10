@@ -1,0 +1,38 @@
+#/bin/bash
+
+
+
+################ Bloque de variables ####################
+DISK=$1
+PART=$2
+POSTCONF=postconf.cmd
+################ Fin bloque de variables ################
+
+### Bloque de variables EVLT
+source $OGETC/os.cfg $DISK $PART
+### Fin de bloque de variables EVLT
+
+
+## Creamos los ficheros. 
+ogSetWinMSWinActivate $1 $2
+ogSetWinMSOfficeActivate $1 $2
+
+
+## Indicación del proceso (variable $POSTCONF), usuario que lo ejecutará ($ADMIN) y configuración del windows para que arranque con autologin tras la postconfiguración (1 "$USER" "$PASSUSER")
+
+echo "ogInstallMiniSetup $1 $2 $POSTCONF $ADMIN $PASSADMIN 1 \"$USER\" \"$PASSUSER\" "
+ogInstallMiniSetup $1 $2 $POSTCONF $ADMIN $PASSADMIN 1 "$USER" "$PASSUSER"
+ogAddCmd $DISK $2 $POSTCONF "cscript \"c:\Program Files (x86)\agua\aguac\scripts\MSWinActivate.vbs\" "
+ogAddCmd $DISK $2 $POSTCONF "cscript \"c:\Program Files (x86)\agua\aguac\scripts\MSOfficeActivate.vbs\" "
+ogAddCmd $DISK $2 $POSTCONF "cscript \"c:\Archivo de Programas (x86)\agua\aguac\scripts\MSWinActivate.vbs\" "
+ogAddCmd $DISK $2 $POSTCONF "cscript \"c:\Archivo de Programas (x86)\agua\aguac\scripts\MSOfficeActivate.vbs\" "
+
+
+ogAddCmd $DISK $2 $POSTCONF "del \"c:\Program Files (x86)\agua\aguac\scripts\MSWinActivate.vbs\" "
+ogAddCmd $DISK $2 $POSTCONF "del \"c:\Program Files (x86)\agua\aguac\scripts\MSOfficeActivate.vbs\" "
+ogAddCmd $DISK $2 $POSTCONF "del \"c:\Archivo de Programas (x86)\agua\aguac\scripts\MSWinActivate.vbs\" "
+ogAddCmd $DISK $2 $POSTCONF "del \"c:\Archivo de Programas (x86)\agua\aguac\scripts\MSOfficeActivate.vbs\" "
+#unix2dos /mnt/sda1/Windows/System32/postconf.cmd
+
+### reiniciamos el equipo
+ogAddCmd $DISK $2 $POSTCONF "shutdown -r -t 300"

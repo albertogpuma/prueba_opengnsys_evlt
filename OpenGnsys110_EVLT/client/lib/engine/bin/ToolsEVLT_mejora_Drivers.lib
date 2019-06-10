@@ -1,0 +1,118 @@
+
+
+
+function ogDriversPackCopy() {
+
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1 " 
+    return
+fi
+[ $# == 2 ] || return $(ogRaiseError $OG_ERR_FORMAT; echo $?)
+DISK=$1
+PART=$2
+WINDOWS=$(ogMount $DISK $PART)
+if `ogFindCache`
+then
+	ogupdateCache REPO /driversPacks.tar  TORRENT peer:60
+	tar xvf ${OGCAC}${OGIMG}/driversPacks.tar -C $WINDOWS
+	echo "tar xvf ${OGCAC}${OGIMG}/driversPacks.tar -C $WINDOWS"
+else
+	tar xvf ${OGIMG}/driversPacks.tar -C $WINDOWS
+fi
+}
+
+
+function ogDriversPackInstall() {
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1 " 
+    return
+fi
+[ $# == 2 ] || return $(ogRaiseError $OG_ERR_FORMAT; echo $?)
+DISK=$1
+PART=$2
+ADMIN=administrador
+PASSADMIN=
+USER=alumnos
+PASSUSER=
+POSTCONF=postconf.cmd
+
+### Generar minisetup para siguiente inicio en windows
+ogInstallMiniSetup $DISK $PART $POSTCONF $ADMIN $PASSADMIN 1 "$USER" "$PASSUSER"
+
+### Instrucciones del cmd
+#ogAddCmd $DISK $PART $POSTCONF "pushd c:\"
+
+ogAddCmd $DISK $PART $POSTCONF "c:\DP_Install_Tool.cmd /S "
+
+
+### Indicar que se ha usado el drivers pack
+#ogAddCmd $DISK $PART $POSTCONF "reg add \"HKLM\SOFTWARE\opengnsys\driverspack\" /v \"inicio\" /t REG_DWORD /d 0 /f"
+### Eliminaciar rastros
+ogAddCmd $DISK $PART $POSTCONF "del /f/q NT6"
+# POPH
+#ogAddCmd $DISK $PART $POSTCONF "popd"
+
+### reiniciar equipo
+ogAddCmd $DISK $PART $POSTCONF "shutdown /r"
+}
+
+
+
+##################################################################################
+############################### Perfiles ######################################
+
+function ogHardwareDevicesCopy() {
+if [ "$*" == "help" ]; then
+    ogHelp "$FUNCNAME" "$FUNCNAME int_ndisk int_npartition" \
+           "$FUNCNAME 1 1 " 
+    return
+fi
+[ $# == 2 ] || return $(ogRaiseError $OG_ERR_FORMAT; echo $?)
+MNT=$(ogMount $1 $2)
+
+mkdir -p ${MNT}/DoubleDriver
+
+#copiamos el binario
+cp $OGIMG/drivers/DoubleDriver/* ${MNT}/DoubleDriver
+
+# copiar todos los perfiles: modelos y AllProfilesTogether 
+#cp -prv $OGIMG/drivers/DoubleDriver ${MNT}/
+#copiar solo los perfiels AllProfilesTogether
+cp -prv $OGIMG/drivers/DoubleDriver/AllProfilesTogether ${MNT}/DoubleDriver/
+
+ogUnmount $1 $2
+
+}
+
+function ogHardwareDevicesInstall() {
+DISK=$1
+PART=$2
+ADMIN=administrador
+PASSADMIN=
+USER=alumnos
+PASSUSER=
+POSTCONF=postconf.cmd
+MNT=$(ogMount $1 $2)
+
+
+### Generar minisetup para siguiente inicio en windows
+ogInstallMiniSetup $DISK $PART $POSTCONF $ADMIN $PASSADMIN 1 "$USER" "$PASSUSER"
+
+#ogAddCmd $DISK $PART $POSTCONF "pushd c:\"
+# parece que le falta \ al final
+#ogAddCmd $DISK $PART $POSTCONF "c:\DoubleDriver\ddc.exe r /source:\"c:\DoubleDriver\AllProfileTogether\/\""
+
+
+#ogAddCmd $DISK $PART $POSTCONF "c:\DoubleDriver\ddc.exe r /source:\"c:\DoubleDriver\perfil\Virtual\ \""
+#DOTHIS="c:\DoubleDriver\ddc.exe r /source:\"c:\DoubleDriver\perfil\Virtual\""
+#ogAddCmd $DISK $PART $POSTCONF "$DOTHIS"
+
+
+DOTHIS="c:\DoubleDriver\ddc.exe r /source:\"c:\DoubleDriver\AllProfilesTogether\""
+ogAddCmd $DISK $PART $POSTCONF "$DOTHIS"
+
+
+#ogAddCmd $DISK $PART $POSTCONF "shutdown /r"
+}

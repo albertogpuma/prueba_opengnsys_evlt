@@ -1,0 +1,14 @@
+
+
+Para Generar un BCD genérico
+desde windows, abrir una consola administrador
+Ejecutar:
+
+bcdedit /set {current} osdevice boot
+bcdedit /set {current} device boot
+bcdedit /set {bootmgr} device boot
+bcdedit /set {memdiag} device boot
+
+Los BCD estan en el directorio
+Windows/Boot
+Windows/bootmgr

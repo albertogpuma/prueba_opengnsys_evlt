@@ -1,0 +1,167 @@
+#!/bin/bash
+#/**
+#@file    ToolsEVLT_EVLT.lib
+#@brief   Librería o clase EVLT
+#@class   Boot
+#@brief   Funciones especificas para el curso 2013-2014 .
+#@version 1.0.5
+#@warning License: GNU GPLv3+
+#*/
+
+
+
+#ogGetDependencia
+#ogGetTipoDependencia
+#ogGetDependenciaNumero
+#OgSetZabbixPATH
+
+
+function ogGetDependencia {
+echo $HOSTNAME | awk -F"-" '{print $2}'
+}
+
+function ogGetDependenciaTipo {
+TYPEDEPENDENCIA=$(echo $HOSTNAME | awk -F"-" '{print substr ($2, 0, 2)}')
+case "$TYPEDEPENDENCIA" in
+    lt|LT) echo "lt" ;;
+    ad|AD) echo "ad" ;;
+    op|OP) echo "opac" ;;
+    et|ET) echo "etu"  ;;
+    po|PO) echo "por"  ;;
+    co|CO) echo "con"  ;;
+    sr|SR) echo "srv"  ;;
+    *) echo "warning tipo dependencia no coincide $TYPEDEPENDENCIA"  ;;
+esac
+}
+
+function ogGetDependenciaNumero {
+	SUBDEPENDENCIA=$(echo $HOSTNAME | awk -F"-" '{print tolower (substr ($2, 3, 3))}')
+	echo $SUBDEPENDENCIA
+}
+
+function ogAdIngControlAula {
+#Especifico para Aulas Docentes Ingenierias
+MOUNTPOINT=$(ogMount 1 1)
+IPEQUIPO=$(ogGetIpAddress)
+case "$IPEQUIPO" in
+	172.17.53.1|172.17.53.2|172.17.53.3|172.17.53.4|172.17.53.5|172.17.53.6|172.17.53.7|172.17.53.8|172.17.53.9|172.17.53.10|172.17.53.11|172.17.53.12)
+		rm "/mnt/sda1/Windows/util/Control Aula V1.0/"*
+		cp "/mnt/sda1/Windows/util/Control Aula HDMI-VGA/Control Aula V1.1/"* "/mnt/sda1/Windows/util/Control Aula V1.0/"
+		;;
+	172.17.53.21|172.17.53.22|172.17.53.23|172.17.53.24|172.17.53.25|172.17.53.26)
+		rm "/mnt/sda1/Windows/util/Control Aula V1.0/"*
+		cp "/mnt/sda1/Windows/util/Control Aula HDMI-VGA/Control Aula V1.1/"* "/mnt/sda1/Windows/util/Control Aula V1.0/"
+		;;
+	172.17.53.102|172.17.53.104|172.17.53.106|172.17.53.108|172.17.53.110|172.17.53.112)
+		rm "/mnt/sda1/Windows/util/Control Aula V1.0/"*
+		cp "/mnt/sda1/Windows/util/Control Aula HDMI-VGA/Control Aula V1.1/"* "/mnt/sda1/Windows/util/Control Aula V1.0/"
+		;;
+	*) echo "$NOMBREAULA no es compatible con HDMI"
+		;;
+esac
+}
+
+function ogSetZabbixHostname ()
+{
+
+DISK=$1
+PART=$2
+MNT=$(ogMount $1 $2)
+FILENAMECONF=zabbix_agentd.conf
+FILENAMELOG=zabbix_agentd.log
+
+
+TYPE=$(ogGetOsVersion $1 $2)
+case "$TYPE" in
+	Linux*)   echo "Zabbix en Linux en /etc/zabbix/"
+		DIRFILECONF=$(ogGetPath $1 $2 "/etc/zabbix")
+	;;
+	*Windows*)   echo "Zabbix en Windows"	
+		DIRFILECONF=$(ogGetPath $1 $2 "/Windows")
+		RECONFZABBIX=$(ogGetPath $1 $2 "/zabbix_agentd.conf")
+	;;
+	*)
+		return 1
+	;;
+esac
+
+FILE=${DIRFILECONF}/zabbix_agentd.conf
+
+# El fichero de configuración existe en una url que debe ser
+if [ -n "$RECONFZABBIX" ]
+then
+    echo "agente windows mal configurado"
+    ogCopyFile 1 1 /zabbix_agentd.conf 1 1 /Windows/
+	ogDeleteFile $1 $2 /"$FILENAMECONF"
+	ogDeleteFile $1 $2 /"$FILENAMELOG"
+	ogDeleteFile $1 $2 /zabbix_agentd.win.conf.vo
+	ogSetZabbixPATH $1 $2
+	test -f "$FILE" && sed -i -e '/^LogFile/ s/=.*/=C:\\\Windows\\\zabbix_agentd.log/' "$FILE"
+fi
+
+# -i para que mofifique el $FILE
+#Usamos dobles comillas para que sustitulla la variables. Si no queremos que sustituya la varible usamos comillas simples
+#Cambiar cuando la lína comience con Hostname   /^Hostname
+#Sustituir cualquier cosa que comience por = por =$HOSTNAME
+test -f "$FILE" && sed -i -e "/^Hostname/ s/=.*/=$HOSTNAME/" "$FILE"
+
+#insertamos un comentario en la configuracion del ServerActive
+test -f "$FILE" && sed -i -e '/^ServerActive/ s/^/#/' "$FILE"
+
+}
+
+
+
+function ogSetZabbixPATH ()
+{
+
+# Detectar tipo de sistema de archivos y montarlo.
+PART=$(ogMount $1 $2) || return $?
+
+#DIR scripts-AGUA
+MOUNTPOINT=$(ogMount $1 $2)
+DIR="${MOUNTPOINT}/Program Files (x86)/agua/aguac/scripts"
+mkdir -p "${DIR}"
+#NOMBRE scritps-AGUA
+NAME=zabbix.reg
+FILENAME="${DIR}/$NAME"
+
+
+cat > "$FILENAME" << EOF
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\services\Zabbix Agent] 
+"Type"=dword:00000010 
+"Start"=dword:00000002 
+"ErrorControl"=dword:00000001 
+"ImagePath"=hex(2):22,00,43,00,3a,00,5c,00,62,00,69,00,6e,00,5c,00,77,00,69,00,\ 
+  6e,00,36,00,34,00,5c,00,7a,00,61,00,62,00,62,00,69,00,78,00,5f,00,61,00,67,\ 
+  00,65,00,6e,00,74,00,64,00,2e,00,65,00,78,00,65,00,22,00,20,00,2d,00,2d,00,\ 
+  63,00,6f,00,6e,00,66,00,69,00,67,00,20,00,22,00,43,00,3a,00,5c,00,57,00,69,\ 
+  00,6e,00,64,00,6f,00,77,00,73,00,5c,00,7a,00,61,00,62,00,62,00,69,00,78,00,\ 
+  5f,00,61,00,67,00,65,00,6e,00,74,00,64,00,2e,00,63,00,6f,00,6e,00,66,00,22,\ 
+  00,00,00 
+"DisplayName"="Zabbix Agent" 
+"ObjectName"="LocalSystem" 
+"Description"="Provides system monitoring"
+EOF
+
+unix2dos "$FILENAME"
+
+
+#Incluir llamada en el scripts ogRunOnce
+DIR="${DIR}/runOnce"
+NAMECALLER=ogRunOnce.cmd
+FILENAME="$DIR/$NAMECALLER"
+mkdir -p "$DIR"
+
+[ -f "$FILENAME" ] || touch "$FILENAME"
+cat >> "$FILENAME" << EOF
+#start "" /wait cmd /c "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+regedit.exe /s "C:\Program Files (x86)\agua\aguac\scripts\\$NAME"
+EOF
+
+unix2dos "$FILENAME"
+
+}
+
+
